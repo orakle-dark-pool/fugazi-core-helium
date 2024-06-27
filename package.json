@@ -1,0 +1,24 @@
+{
+  "name": "fugazi-helium",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.5"
+  },
+  "dependencies": {
+    "@fhenixprotocol/contracts": "^0.2.0",
+    "fhenix-hardhat-plugin": "^0.2.0",
+    "fhenixjs": "^0.2.1",
+    "hardhat-contract-sizer": "^2.10.0",
+    "hardhat-tracer": "^3.0.1",
+    "solady": "^0.0.213"
+  }
+}
