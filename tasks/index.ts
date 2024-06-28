@@ -4,8 +4,8 @@ import "./addCount";
 
 // FHERC20Mintable
 import "./getFHERC20BalanceOfEncrypted";
-// TODO: import "./wrapFHERC20";
-// TODO: import "./unwrapFHERC20";
+import "./wrapFHERC20";
+import "./unwrapFHERC20";
 
 // Fugazi
 
