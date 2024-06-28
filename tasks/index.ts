@@ -1,3 +1,4 @@
-export * from "./getCount";
+import "./getCount";
+import "./addCount";
 
 export default {};

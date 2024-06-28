@@ -32,5 +32,3 @@ task("task:getCount").setAction(async function (
 
   console.log(`got unsealed result: ${unsealed.toString()}`);
 });
-
-export default {};

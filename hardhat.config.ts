@@ -7,6 +7,7 @@ import "fhenix-hardhat-plugin";
 import "hardhat-deploy";
 import { resolve } from "path";
 require("hardhat-contract-sizer");
+require("hardhat-tracer");
 
 // DOTENV_CONFIG_PATH is used to specify the path to the .env file for example in the CI
 const dotenvConfigPath: string = process.env.DOTENV_CONFIG_PATH || "./.env";
