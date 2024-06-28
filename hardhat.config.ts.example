@@ -1,10 +1,12 @@
-import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-toolbox";
+// Plugins
+// Tasks
 import "./tasks";
+import "@nomicfoundation/hardhat-toolbox";
 import { config as dotenvConfig } from "dotenv";
 import "fhenix-hardhat-docker";
 import "fhenix-hardhat-plugin";
 import "hardhat-deploy";
+import { HardhatUserConfig } from "hardhat/config";
 import { resolve } from "path";
 require("hardhat-contract-sizer");
 
@@ -26,7 +28,7 @@ if (!keys) {
   let mnemonic = process.env.MNEMONIC;
   if (!mnemonic) {
     throw new Error(
-      "No mnemonic or private key provided, please set MNEMONIC or KEY in your .env file"
+      "No mnemonic or private key provided, please set MNEMONIC or KEY in your .env file",
     );
   }
   testnetConfig["accounts"] = {
@@ -37,8 +39,6 @@ if (!keys) {
 } else {
   testnetConfig["accounts"] = [keys];
 }
-
-// task("balance", "Prints an account's balance").setAction(async () => {});
 
 const config: HardhatUserConfig = {
   solidity: "0.8.24",
