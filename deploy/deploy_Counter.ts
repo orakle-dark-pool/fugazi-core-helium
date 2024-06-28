@@ -22,16 +22,16 @@ const func: DeployFunction = async function () {
     }
   }
 
-  const counter = await deploy("Counter", {
+  const Counter = await deploy("Counter", {
     from: signer.address,
     args: [],
     log: true,
     skipIfAlreadyDeployed: false,
   });
 
-  console.log(`Counter contract: `, counter.address);
+  console.log(`Counter contract: `, Counter.address);
 };
 
 export default func;
-func.id = "deploy_counter";
+func.id = "deploy_Counter";
 func.tags = ["Counter"];

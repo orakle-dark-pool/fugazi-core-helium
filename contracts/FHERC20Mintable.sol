@@ -1,18 +1,24 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.8.19 <0.9.0;
+pragma solidity ^0.8.24;
 
 import "./libraries/FHERC20.sol";
 
 contract FHERC20Mintable is FHERC20 {
-    euint32 totalEncryptedSupplyCap = FHE.asEuint32(2 ^ 15 - 1);
+    constructor(string memory name_, string memory symbol_, address recipient, inEuint32 memory _encryptedAmount)
+        FHERC20(name_, symbol_)
+    {
+        // type conversion
+        euint32 encryptedAmount = FHE.asEuint32(_encryptedAmount);
 
-    function mintEncrypted() external {
-        euint32 amount = (totalEncryptedSupplyCap - totalEncryptedSupply) / FHE.asEuint32(10);
+        // You cannot mint more than 2^15 - 1 = 32767 tokens.
+        FHE.req(FHE.lte(encryptedAmount, FHE.asEuint32(32767)));
 
-        // mint encrypted amounts of token to the owner
-        _encBalances[msg.sender] = _encBalances[msg.sender] + amount;
-        totalEncryptedSupply = totalEncryptedSupply + amount;
+        // Mint the encrypted amount to the recipient.
+        _mintEncrypted(recipient, encryptedAmount);
     }
 
-    constructor(string memory name_, string memory symbol_) FHERC20(name_, symbol_) {}
+    function _mintEncrypted(address to, euint32 encryptedAmount) internal {
+        _encBalances[to] = _encBalances[to] + encryptedAmount;
+        totalEncryptedSupply = totalEncryptedSupply + encryptedAmount;
+    }
 }

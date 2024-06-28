@@ -23,6 +23,10 @@ import type {
   TypedContractMethod,
 } from "../common";
 
+export type InEuint32Struct = { data: BytesLike };
+
+export type InEuint32StructOutput = [data: string] & { data: string };
+
 export type PermissionStruct = { publicKey: BytesLike; signature: BytesLike };
 
 export type PermissionStructOutput = [publicKey: string, signature: string] & {
@@ -30,15 +34,10 @@ export type PermissionStructOutput = [publicKey: string, signature: string] & {
   signature: string;
 };
 
-export type InEuint32Struct = { data: BytesLike };
-
-export type InEuint32StructOutput = [data: string] & { data: string };
-
 export interface FHERC20MintableInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "DOMAIN_SEPARATOR"
-      | "_allowanceEncrypted"
       | "allowance"
       | "allowanceEncrypted"
       | "approve"
@@ -47,7 +46,6 @@ export interface FHERC20MintableInterface extends Interface {
       | "balanceOfEncrypted"
       | "decimals"
       | "eip712Domain"
-      | "mintEncrypted"
       | "name"
       | "nonces"
       | "permit"
@@ -77,10 +75,6 @@ export interface FHERC20MintableInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "_allowanceEncrypted",
-    values: [AddressLike, AddressLike]
-  ): string;
-  encodeFunctionData(
     functionFragment: "allowance",
     values: [AddressLike, AddressLike]
   ): string;
@@ -107,10 +101,6 @@ export interface FHERC20MintableInterface extends Interface {
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "eip712Domain",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintEncrypted",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
@@ -166,10 +156,6 @@ export interface FHERC20MintableInterface extends Interface {
     functionFragment: "DOMAIN_SEPARATOR",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "_allowanceEncrypted",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "allowanceEncrypted",
@@ -188,10 +174,6 @@ export interface FHERC20MintableInterface extends Interface {
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "eip712Domain",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintEncrypted",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
@@ -344,12 +326,6 @@ export interface FHERC20Mintable extends BaseContract {
 
   DOMAIN_SEPARATOR: TypedContractMethod<[], [string], "view">;
 
-  _allowanceEncrypted: TypedContractMethod<
-    [owner: AddressLike, spender: AddressLike],
-    [bigint],
-    "view"
-  >;
-
   allowance: TypedContractMethod<
     [owner: AddressLike, spender: AddressLike],
     [bigint],
@@ -399,8 +375,6 @@ export interface FHERC20Mintable extends BaseContract {
     ],
     "view"
   >;
-
-  mintEncrypted: TypedContractMethod<[], [void], "nonpayable">;
 
   name: TypedContractMethod<[], [string], "view">;
 
@@ -472,13 +446,6 @@ export interface FHERC20Mintable extends BaseContract {
     nameOrSignature: "DOMAIN_SEPARATOR"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "_allowanceEncrypted"
-  ): TypedContractMethod<
-    [owner: AddressLike, spender: AddressLike],
-    [bigint],
-    "view"
-  >;
-  getFunction(
     nameOrSignature: "allowance"
   ): TypedContractMethod<
     [owner: AddressLike, spender: AddressLike],
@@ -536,9 +503,6 @@ export interface FHERC20Mintable extends BaseContract {
     ],
     "view"
   >;
-  getFunction(
-    nameOrSignature: "mintEncrypted"
-  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "name"
   ): TypedContractMethod<[], [string], "view">;

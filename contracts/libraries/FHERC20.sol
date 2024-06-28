@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.8.19 <0.9.0;
+pragma solidity ^0.8.24;
 
 import {ERC20} from "node_modules/solady/src/tokens/ERC20.sol";
 import {FHE, euint32, inEuint32} from "@fhenixprotocol/contracts/FHE.sol";
@@ -37,20 +37,15 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
 
     /// @dev Returns the decimals places of the token.
     function decimals() public pure override returns (uint8) {
-        return 0;
+        return 0; // Since supporting size is too small we will use 0 decimals
     }
 
     constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
-
-        // mint encrypted amounts of token to the owner
-        euint32 amount = FHE.asEuint32(2 ^ 10);
-        _encBalances[msg.sender] = _encBalances[msg.sender] + amount;
-        totalEncryptedSupply = totalEncryptedSupply + amount;
     }
 
-    function _allowanceEncrypted(address owner, address spender) public view virtual returns (euint32) {
+    function _allowanceEncrypted(address owner, address spender) internal view virtual returns (euint32) {
         return _allowed[owner][spender];
     }
 
@@ -127,15 +122,14 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
         _mint(msg.sender, FHE.decrypt(amountToUnwrap));
     }
 
-    //    function mint(uint256 amount) public {
-    //        _mint(msg.sender, amount);
-    //    }
+    // function mint(uint256 amount) public {
+    //     _mint(msg.sender, amount);
+    // }
 
-    function _mintEncrypted(address to, inEuint32 memory encryptedAmount) internal {
-        euint32 amount = FHE.asEuint32(encryptedAmount);
-        _encBalances[to] = _encBalances[to] + amount;
-        totalEncryptedSupply = totalEncryptedSupply + amount;
-    }
+    // function _mintEncrypted(address to, euint32 encryptedAmount) internal {
+    //     _encBalances[to] = _encBalances[to] + encryptedAmount;
+    //     totalEncryptedSupply = totalEncryptedSupply + encryptedAmount;
+    // }
 
     function transferEncrypted(address to, inEuint32 calldata encryptedAmount) public returns (euint32) {
         return transferEncrypted(to, FHE.asEuint32(encryptedAmount));

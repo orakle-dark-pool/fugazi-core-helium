@@ -38,7 +38,6 @@ export interface FHERC20Interface extends Interface {
   getFunction(
     nameOrSignature:
       | "DOMAIN_SEPARATOR"
-      | "_allowanceEncrypted"
       | "allowance"
       | "allowanceEncrypted"
       | "approve"
@@ -74,10 +73,6 @@ export interface FHERC20Interface extends Interface {
   encodeFunctionData(
     functionFragment: "DOMAIN_SEPARATOR",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "_allowanceEncrypted",
-    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "allowance",
@@ -159,10 +154,6 @@ export interface FHERC20Interface extends Interface {
 
   decodeFunctionResult(
     functionFragment: "DOMAIN_SEPARATOR",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "_allowanceEncrypted",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
@@ -335,12 +326,6 @@ export interface FHERC20 extends BaseContract {
 
   DOMAIN_SEPARATOR: TypedContractMethod<[], [string], "view">;
 
-  _allowanceEncrypted: TypedContractMethod<
-    [owner: AddressLike, spender: AddressLike],
-    [bigint],
-    "view"
-  >;
-
   allowance: TypedContractMethod<
     [owner: AddressLike, spender: AddressLike],
     [bigint],
@@ -460,13 +445,6 @@ export interface FHERC20 extends BaseContract {
   getFunction(
     nameOrSignature: "DOMAIN_SEPARATOR"
   ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "_allowanceEncrypted"
-  ): TypedContractMethod<
-    [owner: AddressLike, spender: AddressLike],
-    [bigint],
-    "view"
-  >;
   getFunction(
     nameOrSignature: "allowance"
   ): TypedContractMethod<
