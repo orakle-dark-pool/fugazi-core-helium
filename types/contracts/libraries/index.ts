@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { FHERC20 } from "./FHERC20";
+export type { FHERC20Mintable } from "./FHERC20Mintable";

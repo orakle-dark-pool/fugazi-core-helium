@@ -32,7 +32,7 @@ export interface FugaziPoolActionFacetInterface extends Interface {
     nameOrSignature:
       | "claim"
       | "eip712Domain"
-      | "exitPool"
+      | "removeLiquidity"
       | "settleBatch"
       | "submitOrder"
   ): FunctionFragment;
@@ -55,7 +55,7 @@ export interface FugaziPoolActionFacetInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "exitPool",
+    functionFragment: "removeLiquidity",
     values: [BytesLike, InEuint32Struct]
   ): string;
   encodeFunctionData(
@@ -72,7 +72,10 @@ export interface FugaziPoolActionFacetInterface extends Interface {
     functionFragment: "eip712Domain",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "exitPool", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removeLiquidity",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "settleBatch",
     data: BytesLike
@@ -215,7 +218,7 @@ export interface FugaziPoolActionFacet extends BaseContract {
     "view"
   >;
 
-  exitPool: TypedContractMethod<
+  removeLiquidity: TypedContractMethod<
     [poolId: BytesLike, _exitAmount: InEuint32Struct],
     [void],
     "nonpayable"
@@ -258,7 +261,7 @@ export interface FugaziPoolActionFacet extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "exitPool"
+    nameOrSignature: "removeLiquidity"
   ): TypedContractMethod<
     [poolId: BytesLike, _exitAmount: InEuint32Struct],
     [void],

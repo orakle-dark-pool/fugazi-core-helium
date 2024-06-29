@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "./libraries/FHERC20.sol";
+import "./FHERC20.sol";
 
 contract FHERC20Mintable is FHERC20 {
     constructor(string memory name_, string memory symbol_, address recipient, inEuint32 memory _encryptedAmount)

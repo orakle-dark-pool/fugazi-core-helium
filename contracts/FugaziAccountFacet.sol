@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity >=0.8.13 <0.9.0;
+pragma solidity ^0.8.24;
 
 import "./FugaziStorageLayout.sol";
 import {IFHERC20} from "./interfaces/IFHERC20.sol";

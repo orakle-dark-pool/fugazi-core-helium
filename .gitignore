@@ -1,5 +1,16 @@
-node_modules
+# vscode
+.vscode/
+
+# env
 .env
+
+# python
+.venv/
+__pycache__/
+poetry.lock
+
+# node_modules
+node_modules
 
 # Hardhat files
 /cache

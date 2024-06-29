@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { FHERC20__factory } from "./FHERC20__factory";
+export { FHERC20Mintable__factory } from "./FHERC20Mintable__factory";

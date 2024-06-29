@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity >=0.8.13 <0.9.0;
+pragma solidity ^0.8.24;
 
 import "./FugaziStorageLayout.sol";
 
@@ -140,7 +140,7 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
         $.lpBalanceOf[msg.sender] = $.lpBalanceOf[msg.sender] + claimableLP;
     }
 
-    function exitPool(bytes32 poolId, inEuint32 calldata _exitAmount) external onlyValidPool(poolId) {
+    function removeLiquidity(bytes32 poolId, inEuint32 calldata _exitAmount) external onlyValidPool(poolId) {
         // get the pool
         poolStateStruct storage $ = poolState[poolId];
 
