@@ -8,11 +8,11 @@ import "./wrapFHERC20";
 import "./unwrapFHERC20";
 
 // Fugazi Diamond
-// import "./FugaziAddFacet";
+import "./FugaziAddFacet";
 
 // Fugazi Account Facet
-// import "./FugaziDeposit";
-// import "./FugaziWithdraw";
+import "./FugaziDeposit";
+import "./FugaziWithdraw";
 
 // Fugazi PoolRegistry Facet
 // import "./FugaziCreatePool";

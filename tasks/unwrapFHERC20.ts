@@ -3,12 +3,14 @@ import { task } from "hardhat/config";
 import type { TaskArguments } from "hardhat/types";
 
 task("task:unwrapFHERC20")
+  .addParam("name", "Name of the contract to unwrap", "FHERC20Mintable")
   .addParam("amount", "Amount to unwrap (plaintext number)", "1")
   .setAction(async function (taskArguments: TaskArguments, hre) {
     const { fhenixjs, ethers, deployments } = hre;
     const [signer] = await ethers.getSigners();
-    const fherc20MintableDeployment = await deployments.get("FHERC20Mintable");
     const amountToUnwrap = Number(taskArguments.amount);
+    const contractName = taskArguments.name;
+    const fherc20MintableDeployment = await deployments.get(contractName);
 
     console.log(
       `Running unwrapFHERC20, targeting contract at: ${fherc20MintableDeployment.address}`
