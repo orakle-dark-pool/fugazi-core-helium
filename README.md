@@ -22,3 +22,10 @@ For the LVR calculation and simulation:
 ```shell
 poetry run python notebooks/LVR_comparison_with_fee.ipynb
 ```
+
+## References
+
+[Arbitrageurs' profits, LVR, and sandwich attacks: batch trading as an AMM design response
+](https://doi.org/10.48550/arXiv.2307.02074)
+[Pricing Personalized Preferences for Privacy Protection in Constant Function Market Makers
+](https://doi.org/10.48550/arXiv.2309.14652)
