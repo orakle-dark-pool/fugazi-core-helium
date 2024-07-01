@@ -66,10 +66,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FakeUSD__factory>;
     getContractFactory(
-      name: "FakeFGZ",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.FakeFGZ__factory>;
-    getContractFactory(
       name: "FugaziAccountFacet",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FugaziAccountFacet__factory>;
@@ -180,11 +176,6 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.FakeUSD>;
     getContractAt(
-      name: "FakeFGZ",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.FakeFGZ>;
-    getContractAt(
       name: "FugaziAccountFacet",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -292,10 +283,6 @@ declare module "hardhat/types/runtime" {
       name: "FakeUSD",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.FakeUSD>;
-    deployContract(
-      name: "FakeFGZ",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.FakeFGZ>;
     deployContract(
       name: "FugaziAccountFacet",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -406,11 +393,6 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.FakeUSD>;
-    deployContract(
-      name: "FakeFGZ",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.FakeFGZ>;
     deployContract(
       name: "FugaziAccountFacet",
       args: any[],

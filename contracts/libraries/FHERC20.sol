@@ -45,6 +45,10 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
         _symbol = symbol_;
     }
 
+    /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
+    /*                        FHERC20 LOGIC                       */
+    /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
+
     function _allowanceEncrypted(address owner, address spender) internal view virtual returns (euint32) {
         return _allowed[owner][spender];
     }
