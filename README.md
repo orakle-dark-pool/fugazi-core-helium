@@ -1,13 +1,24 @@
-# Sample Hardhat Project
+# FUGAZI: The first fully on-chain dark pool on Fhenix
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
+Fugazi is the first fully on-chain dark pool built on Fhenix. It leverages FHE for encryption, batches orders and add noisy order to ensure the pre and post trade privacy.
+
+For the underlying AMM curve we used FMAMM, since more arbitrageurs leads to the less LVR, unlike typical CPMM.
+
+Moreover, for the simplicity of overall logic, Fugazi is built in singleton structure with modules for delegate calls.
+
+Currently Fugazi is actively developed and prototype can be deployed and run on Fhenix Helium testnet.
 
 Try running some of the following tasks:
 
 ```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.ts
+npx hardhat compile
+npx hardhat size-contracts
+npx hardhat deploy --tags Fugazi --network testnet
+npx hardhat task:deposit --name FakeUSD --amount 1000 --network testnet
+```
+
+For the LVR calculation and simulation:
+
+```shell
+poetry run python notebooks/LVR_comparison_with_fee.ipynb
 ```

@@ -19,9 +19,7 @@ import "./FugaziWithdraw";
 // import "./FugaziGetPoolId";
 
 // Fugazi PoolAction Facet
-// import "./FugaziSubmitOrder";
-// import "./FugaziSettleBatch";
-// import "./FugaziClaim";
+// import "./FugaziSwap";
 // import "./FugaziRemoveLiquidity";
 
 // Fugazi Viewer Facet

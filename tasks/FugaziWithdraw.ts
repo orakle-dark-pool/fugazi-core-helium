@@ -90,4 +90,34 @@ task("task:withdraw")
     console.log(
       `Got decrypted balance in Fugazi: ${decryptedBalance.toString()}`
     );
+
+    // load the token contract
+    console.log(`Loading ${tokenName} contract... `);
+    const token = (await ethers.getContractAt(
+      "FHERC20Mintable",
+      tokenDeployment.address,
+      signer
+    )) as unknown as FHERC20Mintable;
+
+    // generate the permit for viewing encrypted balance
+    let permitForToken = await fhenixjs.generatePermit(
+      tokenDeployment.address,
+      undefined, // use the internal provider
+      signer
+    );
+
+    // check the encrypted balance after deposit
+    const encryptedBalanceAfter = await token.balanceOfEncrypted(
+      signer.address,
+      permitForToken
+    );
+    console.log(`Got encrypted balance after deposit:`, encryptedBalanceAfter);
+    const decryptedBalanceAfter = fhenixjs.unseal(
+      tokenDeployment.address,
+      encryptedBalanceAfter
+    );
+    console.log(
+      `Got decrypted balance after deposit:`,
+      decryptedBalanceAfter.toString()
+    );
   });

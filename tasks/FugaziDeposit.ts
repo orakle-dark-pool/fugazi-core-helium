@@ -43,6 +43,31 @@ task("task:deposit")
       signer
     )) as unknown as FHERC20Mintable;
 
+    // generate the permit for viewing encrypted balance
+    let permitForToken = await fhenixjs.generatePermit(
+      tokenDeployment.address,
+      undefined, // use the internal provider
+      signer
+    );
+
+    // check the encrypted balance before deposit
+    const encryptedBalanceBefore = await token.balanceOfEncrypted(
+      signer.address,
+      permitForToken
+    );
+    console.log(
+      `Got encrypted balance before deposit:`,
+      encryptedBalanceBefore
+    );
+    const decryptedBalanceBefore = fhenixjs.unseal(
+      tokenDeployment.address,
+      encryptedBalanceBefore
+    );
+    console.log(
+      `Got decrypted balance before deposit:`,
+      decryptedBalanceBefore.toString()
+    );
+
     // approve token to FugaziDiamond
     console.log(
       `Approving ${amountToDeposit} ${tokenName} to FugaziDiamond... `
@@ -96,7 +121,7 @@ task("task:deposit")
       signer
     ) as unknown as FugaziViewerFacet;
 
-    // generate permit for viewing balance
+    // generate permit for viewing balance in Fugazi
     let permit = await fhenixjs.generatePermit(
       FugaziDiamondDeployment.address,
       undefined, // use the internal provider
@@ -108,10 +133,27 @@ task("task:deposit")
       tokenDeployment.address,
       permit
     );
-    console.log("Got encrypted balance:", encryptedBalance);
+    console.log("Got encrypted balance in Fugazi:", encryptedBalance);
     const decryptedBalance = fhenixjs.unseal(
       FugaziDiamondDeployment.address,
       encryptedBalance
     );
-    console.log(`Got decrypted balance: ${decryptedBalance.toString()}`);
+    console.log(
+      `Got decrypted balance in Fugazi: ${decryptedBalance.toString()}`
+    );
+
+    // check the encrypted balance after deposit
+    const encryptedBalanceAfter = await token.balanceOfEncrypted(
+      signer.address,
+      permitForToken
+    );
+    console.log(`Got encrypted balance after deposit:`, encryptedBalanceAfter);
+    const decryptedBalanceAfter = fhenixjs.unseal(
+      tokenDeployment.address,
+      encryptedBalanceAfter
+    );
+    console.log(
+      `Got decrypted balance after deposit:`,
+      decryptedBalanceAfter.toString()
+    );
   });
