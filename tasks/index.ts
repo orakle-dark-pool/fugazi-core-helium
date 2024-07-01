@@ -2,6 +2,9 @@
 import "./getCount";
 import "./addCount";
 
+// Divisooor
+import "./divCount";
+
 // FHERC20Mintable
 import "./getFHERC20BalanceOfEncrypted";
 import "./wrapFHERC20";
@@ -15,11 +18,11 @@ import "./FugaziDeposit";
 import "./FugaziWithdraw";
 
 // Fugazi PoolRegistry Facet
-// import "./FugaziCreatePool";
-// import "./FugaziGetPoolId";
+import "./FugaziCreatePool";
+import "./FugaziGetPoolId";
 
 // Fugazi PoolAction Facet
-// import "./FugaziSwap";
+import "./FugaziSwap";
 // import "./FugaziRemoveLiquidity";
 
 // Fugazi Viewer Facet

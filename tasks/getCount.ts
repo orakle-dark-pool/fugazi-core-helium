@@ -18,6 +18,7 @@ task("task:getCount").setAction(async function (
   )) as unknown as unknown as Counter;
 
   // Generate a permit
+  console.log("*".repeat(50));
   let permit = await fhenixjs.generatePermit(
     Counter.address,
     undefined, // use the internal provider
@@ -26,10 +27,12 @@ task("task:getCount").setAction(async function (
   console.log(`generated permit:`, permit);
 
   // Get the count in plaintext
+  console.log("*".repeat(50));
   const result = await contract.getCounterPermit(permit);
   console.log(`got count: ${result.toString()}`);
 
   // Get the count in ciphertext then decrypt it
+  console.log("*".repeat(50));
   const sealedResult = await contract.getCounterPermitSealed(permit);
   console.log(`got sealed result:`, sealedResult);
   let unsealed = fhenixjs.unseal(Counter.address, sealedResult);

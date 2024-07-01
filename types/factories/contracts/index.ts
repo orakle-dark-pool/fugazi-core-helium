@@ -4,6 +4,7 @@
 export * as interfaces from "./interfaces";
 export * as libraries from "./libraries";
 export { Counter__factory } from "./Counter__factory";
+export { Divisooor__factory } from "./Divisooor__factory";
 export { FakeFGZ__factory } from "./FakeFGZ__factory";
 export { FakeUSD__factory } from "./FakeUSD__factory";
 export { FugaziAccountFacet__factory } from "./FugaziAccountFacet__factory";

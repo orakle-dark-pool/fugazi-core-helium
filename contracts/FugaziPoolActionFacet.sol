@@ -26,7 +26,7 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
         // adjust the input; you cannot swap (or mint) more than you have currently
         euint32 availableX = FHE.min(
             account[msg.sender].balanceOf[$.tokenX],
-            FHE.and(packedAmounts, FHE.asEuint32(1073709056)) // 2^30 - 1 - (2^15 - 1)
+            FHE.shr(FHE.and(packedAmounts, FHE.asEuint32(1073709056)), FHE.asEuint32(15)) // 2^30 - 1 - (2^15 - 1)
         );
         euint32 availableY = FHE.min(
             account[msg.sender].balanceOf[$.tokenY],

@@ -6,7 +6,7 @@ import "@fhenixprotocol/contracts/FHE.sol";
 import {Permissioned, Permission} from "@fhenixprotocol/contracts/access/Permissioned.sol";
 
 contract Counter is Permissioned {
-    euint32 private counter;
+    euint32 internal counter;
     address public owner;
 
     constructor() {

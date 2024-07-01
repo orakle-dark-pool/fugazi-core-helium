@@ -6,6 +6,7 @@ export type { interfaces };
 import type * as libraries from "./libraries";
 export type { libraries };
 export type { Counter } from "./Counter";
+export type { Divisooor } from "./Divisooor";
 export type { FakeFGZ } from "./FakeFGZ";
 export type { FakeUSD } from "./FakeUSD";
 export type { FugaziAccountFacet } from "./FugaziAccountFacet";

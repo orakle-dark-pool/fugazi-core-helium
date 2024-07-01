@@ -9,9 +9,23 @@ const func: DeployFunction = async function () {
   const { deploy } = hre.deployments;
   const [signer] = await ethers.getSigners();
 
+  // Check if account is funded and fund if not
+  if ((await ethers.provider.getBalance(signer.address)).toString() === "0") {
+    if (hre.network.name === "localfhenix") {
+      await fhenixjs.getFunds(signer.address);
+    } else {
+      console.log(
+        chalk.red(
+          "Please fund your account with testnet FHE from https://faucet.fhenix.zone"
+        )
+      );
+      return;
+    }
+  }
+
   // Deploy FakeUSD with initial supply
   const deployFakeUSD = async () => {
-    const FakeUSDInitialSupply = 10000; // Example initial supply, adjust as needed
+    const FakeUSDInitialSupply = 32767; // maximum 2^15 - 1, adjust as needed
 
     console.log(`Encrypting  FakeUSD initial supply: ${FakeUSDInitialSupply}`);
     const encryptedFakeUSDInitialSupply = await fhenixjs.encrypt_uint32(
@@ -34,7 +48,7 @@ const func: DeployFunction = async function () {
 
   // Deploy FakeFGZ with initial supply
   const deployFakeFGZ = async () => {
-    const FakeFGZInitialSupply = 1000; // Example initial supply, adjust as needed
+    const FakeFGZInitialSupply = 4097; // maximum 2^15 - 1, adjust as needed
 
     console.log(`Encrypting  FakeFGZ initial supply: ${FakeFGZInitialSupply}`);
     const encryptedFakeFGZInitialSupply = await fhenixjs.encrypt_uint32(

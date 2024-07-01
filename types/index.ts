@@ -32,6 +32,8 @@ export type { Strings } from "./@openzeppelin/contracts/utils/Strings";
 export { Strings__factory } from "./factories/@openzeppelin/contracts/utils/Strings__factory";
 export type { Counter } from "./contracts/Counter";
 export { Counter__factory } from "./factories/contracts/Counter__factory";
+export type { Divisooor } from "./contracts/Divisooor";
+export { Divisooor__factory } from "./factories/contracts/Divisooor__factory";
 export type { FakeFGZ } from "./contracts/FakeFGZ";
 export { FakeFGZ__factory } from "./factories/contracts/FakeFGZ__factory";
 export type { FakeUSD } from "./contracts/FakeUSD";
