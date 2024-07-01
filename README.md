@@ -27,5 +27,19 @@ poetry run python notebooks/LVR_comparison_with_fee.ipynb
 
 [Arbitrageurs' profits, LVR, and sandwich attacks: batch trading as an AMM design response
 ](https://doi.org/10.48550/arXiv.2307.02074)
+
 [Pricing Personalized Preferences for Privacy Protection in Constant Function Market Makers
 ](https://doi.org/10.48550/arXiv.2309.14652)
+
+[CrocSwap-protocol](https://github.com/CrocSwap/CrocSwap-protocol.git)
+
+[muffin](https://github.com/muffinfi/muffin.git)
+
+## TODO
+
+- overhaul the contract structure to make it fully support the diamond proxy pattern's utilities
+- finish the pool swap logic
+- gas optimization
+- write docs
+- update the notebooks
+- write articles

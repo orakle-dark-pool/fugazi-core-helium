@@ -92,7 +92,11 @@ contract FugaziStorageLayout is Permissioned {
         // pool reserves
         euint32 reserveX;
         euint32 reserveY;
-        // protocol account
+        /*
+        protocol account
+        The protocol will trade against itself with randomized order.
+        User can set the parameters of randomization and pay the fee for additional privacy.
+        */
         euint32 protocolX;
         euint32 protocolY;
         // LP token shares
