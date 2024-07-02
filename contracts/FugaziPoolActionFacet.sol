@@ -3,13 +3,19 @@ pragma solidity ^0.8.24;
 
 import "./FugaziStorageLayout.sol";
 
-// This facet will handle swap & addLiquidity & removeLiquidity operations
-// TODO: finish the claim() function
-// TODO: finish the exitPool() function
 // TODO: enable the noise order
 // TODO: enable the fee charge mechanism
+/*
+This facet will handle the operations related to swap and liquidity provision.
+Swap and addLiquidity are batched and settled together since they may affect the price of the pool.
+Meanwhile, removeLiquidity and claim are independent of the batch, since they do not change the price.
+*/
 contract FugaziPoolActionFacet is FugaziStorageLayout {
-    function submitOrder(bytes32 poolId, inEuint32 calldata _packedAmounts) external onlyValidPool(poolId) {
+    function submitOrder(bytes32 poolId, inEuint32 calldata _packedAmounts)
+        external
+        onlyValidPool(poolId)
+        returns (uint32)
+    {
         // transform the type
         /*
         smallest 15 bits = amount of tokenY
@@ -51,7 +57,29 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
         batch.mintX = batch.mintX + batch.order[msg.sender].mintX;
         batch.mintY = batch.mintY + batch.order[msg.sender].mintY;
 
-        // TODO: if this is the first order of epoch from trader then add the unclaimed order
+        // if this is the first order of epoch from trader then add the unclaimed order
+        _addUnclaimedOrder(msg.sender, poolId, $.epoch);
+
+        // return the epoch of the order received
+        return $.epoch;
+    }
+
+    function _addUnclaimedOrder(address trader, bytes32 poolId, uint32 epoch) internal {
+        accountStruct storage $ = account[trader];
+
+        // check if the order is already in the unclaimed order list
+        uint256 orderCount = 0;
+        for (uint256 i = 0; i < $.unclaimedOrders.length; i++) {
+            if ($.unclaimedOrders[i].poolId == poolId && $.unclaimedOrders[i].epoch == epoch) {
+                orderCount++;
+                break;
+            }
+        }
+
+        // if not, add the order
+        if (orderCount == 0) {
+            $.unclaimedOrders.push(unclaimedOrderStruct({poolId: poolId, epoch: epoch}));
+        }
     }
 
     function settleBatch(bytes32 poolId) external onlyValidPool(poolId) {
@@ -66,7 +94,7 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
         // check if enough time has passed
         if (block.timestamp < $.lastSettlement + epochTime) revert EpochNotEnded();
 
-        // update the initial pool state
+        // read reserves and set them as initial values of the batch
         batch.reserveX0 = $.reserveX;
         batch.reserveY0 = $.reserveY;
 
@@ -80,11 +108,18 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
         batch.outY =
             FHE.div(FHE.mul(batch.swapX, batch.intermidiateValues.YForPricing), batch.intermidiateValues.XForPricing);
 
-        // update the final pool state
+        // calculate the final reserves of the batch
         batch.reserveX1 = batch.reserveX0 + batch.swapX + batch.mintX - batch.outX;
         batch.reserveY1 = batch.reserveY0 + batch.swapY + batch.mintY - batch.outY;
 
-        // mint the LP token
+        // update the pool state
+        $.reserveX = batch.reserveX1;
+        $.reserveY = batch.reserveY1;
+
+        /*
+         mint the LP token for this epoch
+         this will be distributed to traders once they claim their orders
+        */
         batch.lpIncrement = FHE.min(
             FHE.div(FHE.mul($.lpTotalSupply, batch.mintX), batch.reserveX0),
             FHE.div(FHE.mul($.lpTotalSupply, batch.mintY), batch.reserveY0)
@@ -96,7 +131,7 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
                 * (x_0 * y_mint + 2 * x_swap * y_mint + x_mint * y_0 + 2 * x_mint * y_swap + 2 * x_mint * y_mint) 
                 / (2 * x_0 * y_0 + 2 * x_0 * y_swap + 2 * x_swap * y_0 + x_0 * y_mint + x_mint * y_0)
             See https://github.com/kosunghun317/alternative_AMMs/blob/master/notes/FMAMM_batch_math.ipynb for derivation.
-            */
+           */
         $.lpTotalSupply = $.lpTotalSupply + batch.lpIncrement;
         $.lpBalanceOf[address(this)] = $.lpBalanceOf[address(this)] + batch.lpIncrement;
 
@@ -112,13 +147,17 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
     function _claim(bytes32 poolId, uint32 epoch) internal {
         // get the pool and epoch
         poolStateStruct storage $ = poolState[poolId];
-        batchStruct storage batch = poolState[poolId].batch[epoch];
+        batchStruct storage batch = $.batch[epoch];
+
+        // check if the epoch is already settled
+        if (epoch >= $.epoch) revert EpochNotEnded();
 
         // check if order is already claimed
         if (batch.order[msg.sender].claimed) revert OrderAlreadyClaimed();
 
         // mark the order as claimed
         batch.order[msg.sender].claimed = true;
+        _removeUnclaimedOrder(msg.sender, poolId, epoch);
 
         // claim the output amount from the batch
         euint32 claimableX =
@@ -126,18 +165,31 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
         euint32 claimableY =
             batch.order[msg.sender].swapX * batch.intermidiateValues.YForPricing / batch.intermidiateValues.XForPricing;
 
-        account[msg.sender].balanceOf[poolState[poolId].tokenX] =
-            account[msg.sender].balanceOf[poolState[poolId].tokenX] + claimableX;
-        account[msg.sender].balanceOf[poolState[poolId].tokenY] =
-            account[msg.sender].balanceOf[poolState[poolId].tokenY] + claimableY;
+        account[msg.sender].balanceOf[$.tokenX] = account[msg.sender].balanceOf[$.tokenX] + claimableX;
+        account[msg.sender].balanceOf[$.tokenY] = account[msg.sender].balanceOf[$.tokenY] + claimableY;
 
         // claim the lp token from the batch
         euint32 claimableLP = FHE.min(
             batch.lpIncrement * batch.order[msg.sender].mintX / batch.mintX,
             batch.lpIncrement * batch.order[msg.sender].mintY / batch.mintY
-        );
+        ); /*
+            Again, this is underestimation. Correct formula will be used once the gas usage becomes affordable.
+           */
         $.lpBalanceOf[address(this)] = $.lpBalanceOf[address(this)] - claimableLP;
         $.lpBalanceOf[msg.sender] = $.lpBalanceOf[msg.sender] + claimableLP;
+    }
+
+    function _removeUnclaimedOrder(address trader, bytes32 poolId, uint32 epoch) internal {
+        accountStruct storage $ = account[trader];
+
+        // find the order and remove it
+        for (uint256 i = 0; i < $.unclaimedOrders.length; i++) {
+            if ($.unclaimedOrders[i].poolId == poolId && $.unclaimedOrders[i].epoch == epoch) {
+                $.unclaimedOrders[i] = $.unclaimedOrders[$.unclaimedOrders.length - 1];
+                $.unclaimedOrders.pop();
+                break;
+            }
+        }
     }
 
     function removeLiquidity(bytes32 poolId, inEuint32 calldata _exitAmount) external onlyValidPool(poolId) {
@@ -145,11 +197,21 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
         poolStateStruct storage $ = poolState[poolId];
 
         // adjust the amount; u cannot burn more than you have!
-
-        // deduct the LP token balance of msg.sender
+        euint32 exitAmount = FHE.asEuint32(_exitAmount);
+        exitAmount = FHE.min(exitAmount, $.lpBalanceOf[msg.sender]);
 
         // calculate the amount of tokenX and tokenY to be released
+        euint32 releaseX = FHE.div(FHE.mul(exitAmount, $.reserveX), $.lpTotalSupply);
+        euint32 releaseY = FHE.div(FHE.mul(exitAmount, $.reserveY), $.lpTotalSupply);
+
+        // burn the LP token and update total supply
+        $.lpBalanceOf[msg.sender] = $.lpBalanceOf[msg.sender] - exitAmount;
+        $.lpTotalSupply = $.lpTotalSupply - exitAmount;
 
         // update the reserves & account token balance
+        $.reserveX = $.reserveX - releaseX;
+        $.reserveY = $.reserveY - releaseY;
+        account[msg.sender].balanceOf[$.tokenX] = account[msg.sender].balanceOf[$.tokenX] + releaseX;
+        account[msg.sender].balanceOf[$.tokenY] = account[msg.sender].balanceOf[$.tokenY] + releaseY;
     }
 }

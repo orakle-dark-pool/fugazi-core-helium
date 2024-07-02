@@ -16,4 +16,16 @@ contract FugaziViewerFacet is FugaziStorageLayout {
         // reencrypt and return
         return FHE.sealoutput(account[msg.sender].balanceOf[token], permission.publicKey);
     }
+
+    // get unclaimed orders' length
+    function getUnclaimedOrdersLength() external view returns (uint256) {
+        // reencrypt and return
+        return account[msg.sender].unclaimedOrders.length;
+    }
+
+    // get unclaimed order
+    function getUnclaimedOrder(uint256 index) external view returns (unclaimedOrderStruct memory) {
+        // reencrypt and return
+        return account[msg.sender].unclaimedOrders[index];
+    }
 }

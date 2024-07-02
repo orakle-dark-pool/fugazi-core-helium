@@ -14,6 +14,7 @@ contract FugaziDiamond is FugaziStorageLayout {
         // set selector to facet mapping
         for (uint256 i; i < _facetAndSelectors.length; i++) {
             selectorTofacet[_facetAndSelectors[i].selector] = _facetAndSelectors[i].facet;
+            emit facetAdded(_facetAndSelectors[i].selector, _facetAndSelectors[i].facet);
         }
     }
 
@@ -39,5 +40,6 @@ contract FugaziDiamond is FugaziStorageLayout {
         }
     }
 
+    // this is just for remove the warning in compilation
     receive() external payable {}
 }

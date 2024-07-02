@@ -19,6 +19,7 @@ contract FugaziStorageLayout is Permissioned {
     error notOwner();
 
     // events
+    event facetAdded(bytes4 selector, address facet);
 
     // modifiers
     modifier onlyOwner() {
@@ -67,6 +68,7 @@ contract FugaziStorageLayout is Permissioned {
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
     // errors
+    error InvalidTokenOrder();
     error PoolAlreadyExists();
 
     // events
@@ -88,7 +90,7 @@ contract FugaziStorageLayout is Permissioned {
         address tokenY;
         uint32 epoch;
         uint32 lastSettlement;
-        bool isSettling; // if true, any operation is not allowed. finish the settlement first
+        // bool isSettling; // not used yet
         // pool reserves
         euint32 reserveX;
         euint32 reserveY;
@@ -107,7 +109,7 @@ contract FugaziStorageLayout is Permissioned {
     }
 
     // storage variables
-    uint32 internal feeBitShifts = 10;
+    uint32 internal constant feeBitShifts = 10;
     mapping(address => mapping(address => bytes32)) internal poolIdMapping;
     mapping(bytes32 => poolStateStruct) internal poolState;
 
