@@ -44,6 +44,7 @@ export interface FugaziPoolActionFacetInterface extends Interface {
       | "PoolCreated"
       | "Withdraw"
       | "epochSettled"
+      | "facetAdded"
   ): EventFragment;
 
   encodeFunctionData(
@@ -153,6 +154,19 @@ export namespace epochSettledEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace facetAddedEvent {
+  export type InputTuple = [selector: BytesLike, facet: AddressLike];
+  export type OutputTuple = [selector: string, facet: string];
+  export interface OutputObject {
+    selector: string;
+    facet: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export interface FugaziPoolActionFacet extends BaseContract {
   connect(runner?: ContractRunner | null): FugaziPoolActionFacet;
   waitForDeployment(): Promise<this>;
@@ -228,7 +242,7 @@ export interface FugaziPoolActionFacet extends BaseContract {
 
   submitOrder: TypedContractMethod<
     [poolId: BytesLike, _packedAmounts: InEuint32Struct],
-    [void],
+    [bigint],
     "nonpayable"
   >;
 
@@ -274,7 +288,7 @@ export interface FugaziPoolActionFacet extends BaseContract {
     nameOrSignature: "submitOrder"
   ): TypedContractMethod<
     [poolId: BytesLike, _packedAmounts: InEuint32Struct],
-    [void],
+    [bigint],
     "nonpayable"
   >;
 
@@ -312,6 +326,13 @@ export interface FugaziPoolActionFacet extends BaseContract {
     epochSettledEvent.InputTuple,
     epochSettledEvent.OutputTuple,
     epochSettledEvent.OutputObject
+  >;
+  getEvent(
+    key: "facetAdded"
+  ): TypedContractEvent<
+    facetAddedEvent.InputTuple,
+    facetAddedEvent.OutputTuple,
+    facetAddedEvent.OutputObject
   >;
 
   filters: {
@@ -368,6 +389,17 @@ export interface FugaziPoolActionFacet extends BaseContract {
       epochSettledEvent.InputTuple,
       epochSettledEvent.OutputTuple,
       epochSettledEvent.OutputObject
+    >;
+
+    "facetAdded(bytes4,address)": TypedContractEvent<
+      facetAddedEvent.InputTuple,
+      facetAddedEvent.OutputTuple,
+      facetAddedEvent.OutputObject
+    >;
+    facetAdded: TypedContractEvent<
+      facetAddedEvent.InputTuple,
+      facetAddedEvent.OutputTuple,
+      facetAddedEvent.OutputObject
     >;
   };
 }

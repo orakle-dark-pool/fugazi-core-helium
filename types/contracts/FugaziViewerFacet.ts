@@ -30,8 +30,26 @@ export type PermissionStructOutput = [publicKey: string, signature: string] & {
   signature: string;
 };
 
+export declare namespace FugaziStorageLayout {
+  export type UnclaimedOrderStructStruct = {
+    poolId: BytesLike;
+    epoch: BigNumberish;
+  };
+
+  export type UnclaimedOrderStructStructOutput = [
+    poolId: string,
+    epoch: bigint
+  ] & { poolId: string; epoch: bigint };
+}
+
 export interface FugaziViewerFacetInterface extends Interface {
-  getFunction(nameOrSignature: "eip712Domain" | "getBalance"): FunctionFragment;
+  getFunction(
+    nameOrSignature:
+      | "eip712Domain"
+      | "getBalance"
+      | "getUnclaimedOrder"
+      | "getUnclaimedOrdersLength"
+  ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
@@ -40,6 +58,7 @@ export interface FugaziViewerFacetInterface extends Interface {
       | "PoolCreated"
       | "Withdraw"
       | "epochSettled"
+      | "facetAdded"
   ): EventFragment;
 
   encodeFunctionData(
@@ -50,12 +69,28 @@ export interface FugaziViewerFacetInterface extends Interface {
     functionFragment: "getBalance",
     values: [AddressLike, PermissionStruct]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getUnclaimedOrder",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getUnclaimedOrdersLength",
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "eip712Domain",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getBalance", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getUnclaimedOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getUnclaimedOrdersLength",
+    data: BytesLike
+  ): Result;
 }
 
 export namespace DepositEvent {
@@ -118,6 +153,19 @@ export namespace epochSettledEvent {
   export interface OutputObject {
     poolId: string;
     epoch: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace facetAddedEvent {
+  export type InputTuple = [selector: BytesLike, facet: AddressLike];
+  export type OutputTuple = [selector: string, facet: string];
+  export interface OutputObject {
+    selector: string;
+    facet: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -190,6 +238,14 @@ export interface FugaziViewerFacet extends BaseContract {
     "view"
   >;
 
+  getUnclaimedOrder: TypedContractMethod<
+    [index: BigNumberish],
+    [FugaziStorageLayout.UnclaimedOrderStructStructOutput],
+    "view"
+  >;
+
+  getUnclaimedOrdersLength: TypedContractMethod<[], [bigint], "view">;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
@@ -218,6 +274,16 @@ export interface FugaziViewerFacet extends BaseContract {
     [string],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "getUnclaimedOrder"
+  ): TypedContractMethod<
+    [index: BigNumberish],
+    [FugaziStorageLayout.UnclaimedOrderStructStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getUnclaimedOrdersLength"
+  ): TypedContractMethod<[], [bigint], "view">;
 
   getEvent(
     key: "Deposit"
@@ -253,6 +319,13 @@ export interface FugaziViewerFacet extends BaseContract {
     epochSettledEvent.InputTuple,
     epochSettledEvent.OutputTuple,
     epochSettledEvent.OutputObject
+  >;
+  getEvent(
+    key: "facetAdded"
+  ): TypedContractEvent<
+    facetAddedEvent.InputTuple,
+    facetAddedEvent.OutputTuple,
+    facetAddedEvent.OutputObject
   >;
 
   filters: {
@@ -309,6 +382,17 @@ export interface FugaziViewerFacet extends BaseContract {
       epochSettledEvent.InputTuple,
       epochSettledEvent.OutputTuple,
       epochSettledEvent.OutputObject
+    >;
+
+    "facetAdded(bytes4,address)": TypedContractEvent<
+      facetAddedEvent.InputTuple,
+      facetAddedEvent.OutputTuple,
+      facetAddedEvent.OutputObject
+    >;
+    facetAdded: TypedContractEvent<
+      facetAddedEvent.InputTuple,
+      facetAddedEvent.OutputTuple,
+      facetAddedEvent.OutputObject
     >;
   };
 }

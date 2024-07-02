@@ -26,6 +26,20 @@ poetry run python notebooks/LVR_comparison_with_fee.ipynb
 
 ## References
 
+### Dark pool in general
+
+[SoK: Privacy-Enhancing Technologies in Finance](https://ia.cr/2023/122)\
+[Optimal Trade Execution in Illiquid Markets](https://doi.org/10.48550/arXiv.0902.2516)\
+[Optimal liquidation in dark pools](https://ssrn.com/abstract=2698419)\
+[Liquidation in the Face of Adversity: Stealth vs. Sunshine Trading](https://dx.doi.org/10.2139/ssrn.1007014)\
+[A two-player portfolio tracking game](https://doi.org/10.48550/arXiv.1911.05122)
+
+### Privacy in AMMs
+
+[A Note on Privacy in Constant Function Market Makers](https://doi.org/10.48550/arXiv.2103.01193)\
+[Differential Privacy in Constant Function Market Makers](https://eprint.iacr.org/2021/1101)\
+[Pricing Personalized Preferences for Privacy Protection in Constant Function Market Makers](https://doi.org/10.48550/arXiv.2309.14652)
+
 ### LVR
 
 [Automated Market Making and Loss-Versus-Rebalancing](https://doi.org/10.48550/arXiv.2208.06046)\
@@ -36,13 +50,9 @@ poetry run python notebooks/LVR_comparison_with_fee.ipynb
 
 [The High-Frequency Trading Arms Race: Frequent Batch Auctions as a Market Design Response](https://doi.org/10.1093/qje/qjv027)\
 [Frequent Batch Auctions and Informed Trading](https://dx.doi.org/10.2139/ssrn.4065547)\
+[The Market Quality Effects of Sub-Second Frequent Batch Auctions: Evidence from Dark Trading Restrictions](https://ssrn.com/abstract=4191970)\
 [Augmenting Batch Exchanges with Constant Function Market Makers](https://doi.org/10.48550/arXiv.2210.04929)\
 [Arbitrageurs' profits, LVR, and sandwich attacks: batch trading as an AMM design response](https://doi.org/10.48550/arXiv.2307.02074)
-
-### Privacy in AMMs
-
-[Pricing Personalized Preferences for Privacy Protection in Constant Function Market Makers
-](https://doi.org/10.48550/arXiv.2309.14652)
 
 ### Singleton DEXs
 
@@ -53,7 +63,6 @@ poetry run python notebooks/LVR_comparison_with_fee.ipynb
 ## TODO
 
 - overhaul the contract structure to make it fully support the diamond proxy pattern's utilities
-- finish the pool swap logic
 - gas optimization
 - write docs
 - update the notebooks
