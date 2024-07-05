@@ -15,7 +15,8 @@ node_modules
 # Hardhat files
 /cache
 /artifacts
-/deployments/*
+/deployments/localfhenix/*
+/deployments/testnet/*
 
 # TypeChain files
 /typechain
