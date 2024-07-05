@@ -59,6 +59,8 @@ task("task:addFacets").setAction(async function (
       facet: FugaziViewerFacet.address,
       selectors: [
         "08b3f650", // getBalance
+        "c7c13129", // getUnclaimedOrdersLength
+        "6697d691", // getUnclaimedOrder
       ],
     },
   ];

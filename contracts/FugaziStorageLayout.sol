@@ -70,11 +70,16 @@ contract FugaziStorageLayout is Permissioned {
     // errors
     error InvalidTokenOrder();
     error PoolAlreadyExists();
+    error BatchIsSettlement();
 
     // events
     event PoolCreated(address tokenX, address tokenY, bytes32 poolId);
 
     // modifiers
+    modifier notInSettlement(bytes32 poolId) {
+        if (poolState[poolId].settlementStep != 0) revert BatchIsSettlement();
+        _;
+    }
 
     // structs
     struct poolCreationInputStruct {
@@ -90,7 +95,8 @@ contract FugaziStorageLayout is Permissioned {
         address tokenY;
         uint32 epoch;
         uint32 lastSettlement;
-        // bool isSettling; // not used yet
+        // settlement step counter
+        uint32 settlementStep;
         // pool reserves
         euint32 reserveX;
         euint32 reserveY;
@@ -123,6 +129,7 @@ contract FugaziStorageLayout is Permissioned {
     error OrderAlreadyClaimed();
 
     // events
+    event orderSubmitted(bytes32 poolId, uint32 epoch);
     event epochSettled(bytes32 poolId, uint32 epoch);
 
     // modifiers

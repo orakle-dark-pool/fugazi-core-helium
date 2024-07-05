@@ -48,7 +48,7 @@ const func: DeployFunction = async function () {
 
   // Deploy FakeFGZ with initial supply
   const deployFakeFGZ = async () => {
-    const FakeFGZInitialSupply = 4097; // maximum 2^15 - 1, adjust as needed
+    const FakeFGZInitialSupply = 32767; // maximum 2^15 - 1, adjust as needed
 
     console.log(`Encrypting  FakeFGZ initial supply: ${FakeFGZInitialSupply}`);
     const encryptedFakeFGZInitialSupply = await fhenixjs.encrypt_uint32(

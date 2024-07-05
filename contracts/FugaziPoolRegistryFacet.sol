@@ -26,7 +26,7 @@ contract FugaziPoolRegistryFacet is FugaziStorageLayout {
         );
         euint32 availabeY = FHE.min(
             account[msg.sender].balanceOf[tokenY],
-            FHE.and(initialReserves, FHE.asEuint32(2 ^ 15 - 1)) // smallest 15 bits
+            FHE.and(initialReserves, FHE.asEuint32(32767)) // smallest 15 bits (32767 = 2 ** 15 - 1)
         );
 
         // minimum reserves: at least 2048 of each token
@@ -56,7 +56,7 @@ contract FugaziPoolRegistryFacet is FugaziStorageLayout {
 
     function _createPool(poolCreationInputStruct memory i) internal {
         // check if the input tokens are in right order
-        if (i.tokenY >= i.tokenX) revert InvalidTokenOrder();
+        if (i.tokenY <= i.tokenX) revert InvalidTokenOrder();
 
         // check if pool already exists
         bytes32 poolId = getPoolId(i.tokenX, i.tokenY);
@@ -66,6 +66,7 @@ contract FugaziPoolRegistryFacet is FugaziStorageLayout {
 
         // update pool id mapping
         poolIdMapping[i.tokenX][i.tokenY] = keccak256(abi.encodePacked(i.tokenX, i.tokenY));
+        poolId = getPoolId(i.tokenX, i.tokenY);
 
         // initialize pool
         poolStateStruct storage $ = poolState[poolId];
@@ -83,6 +84,7 @@ contract FugaziPoolRegistryFacet is FugaziStorageLayout {
         // set epoch & settlement time
         $.epoch = 0;
         $.lastSettlement = uint32(block.timestamp);
+        $.settlementStep = 0;
 
         // take half of fee and set protocol account balances
         $.protocolX = FHE.shr(i.initialReserveX, FHE.asEuint32(feeBitShifts + 1));

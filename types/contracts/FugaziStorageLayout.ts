@@ -34,6 +34,7 @@ export interface FugaziStorageLayoutInterface extends Interface {
       | "Withdraw"
       | "epochSettled"
       | "facetAdded"
+      | "orderSubmitted"
   ): EventFragment;
 
   encodeFunctionData(
@@ -120,6 +121,19 @@ export namespace facetAddedEvent {
   export interface OutputObject {
     selector: string;
     facet: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace orderSubmittedEvent {
+  export type InputTuple = [poolId: BytesLike, epoch: BigNumberish];
+  export type OutputTuple = [poolId: string, epoch: bigint];
+  export interface OutputObject {
+    poolId: string;
+    epoch: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -250,6 +264,13 @@ export interface FugaziStorageLayout extends BaseContract {
     facetAddedEvent.OutputTuple,
     facetAddedEvent.OutputObject
   >;
+  getEvent(
+    key: "orderSubmitted"
+  ): TypedContractEvent<
+    orderSubmittedEvent.InputTuple,
+    orderSubmittedEvent.OutputTuple,
+    orderSubmittedEvent.OutputObject
+  >;
 
   filters: {
     "Deposit(address,address)": TypedContractEvent<
@@ -316,6 +337,17 @@ export interface FugaziStorageLayout extends BaseContract {
       facetAddedEvent.InputTuple,
       facetAddedEvent.OutputTuple,
       facetAddedEvent.OutputObject
+    >;
+
+    "orderSubmitted(bytes32,uint32)": TypedContractEvent<
+      orderSubmittedEvent.InputTuple,
+      orderSubmittedEvent.OutputTuple,
+      orderSubmittedEvent.OutputObject
+    >;
+    orderSubmitted: TypedContractEvent<
+      orderSubmittedEvent.InputTuple,
+      orderSubmittedEvent.OutputTuple,
+      orderSubmittedEvent.OutputObject
     >;
   };
 }

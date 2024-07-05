@@ -14,6 +14,7 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
     function submitOrder(bytes32 poolId, inEuint32 calldata _packedAmounts)
         external
         onlyValidPool(poolId)
+        notInSettlement(poolId)
         returns (uint32)
     {
         // transform the type
@@ -39,6 +40,8 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
             FHE.and(packedAmounts, FHE.asEuint32(32767)) // 2^15 - 1
         );
 
+        // _takeFee();
+
         // deduct the token balance of msg.sender
         account[msg.sender].balanceOf[$.tokenX] = account[msg.sender].balanceOf[$.tokenX] - availableX;
         account[msg.sender].balanceOf[$.tokenY] = account[msg.sender].balanceOf[$.tokenY] - availableY;
@@ -61,8 +64,16 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
         _addUnclaimedOrder(msg.sender, poolId, $.epoch);
 
         // return the epoch of the order received
+        emit orderSubmitted(poolId, $.epoch);
         return $.epoch;
     }
+
+    function _takeFee() internal {
+        // calculate the fee to take according to the noise order factor and input amounts
+        _addNoiseOrder();
+    }
+
+    function _addNoiseOrder() internal {}
 
     function _addUnclaimedOrder(address trader, bytes32 poolId, uint32 epoch) internal {
         accountStruct storage $ = account[trader];
@@ -83,14 +94,27 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
     }
 
     function settleBatch(bytes32 poolId) external onlyValidPool(poolId) {
-        _settleBatch(poolId);
-    }
-
-    function _settleBatch(bytes32 poolId) internal {
-        // get the pool and epoch
+        // load the pool
         poolStateStruct storage $ = poolState[poolId];
         batchStruct storage batch = $.batch[$.epoch];
 
+        // settle the batch according to the step
+        // at most 1 division per step
+        if ($.settlementStep == 0) {
+            _settleBatchStep1($, batch);
+        } else if ($.settlementStep == 1) {
+            _settleBatchStep2($, batch);
+        } else if ($.settlementStep == 2) {
+            _settleBatchStep3($, batch);
+        } else {
+            _settleBatchStep4($, batch);
+        }
+
+        // update the step
+        $.settlementStep = ($.settlementStep + 1) % 4;
+    }
+
+    function _settleBatchStep1(poolStateStruct storage $, batchStruct storage batch) internal {
         // check if enough time has passed
         if (block.timestamp < $.lastSettlement + epochTime) revert EpochNotEnded();
 
@@ -105,33 +129,42 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
         // calculate the output amounts
         batch.outX =
             FHE.div(FHE.mul(batch.swapY, batch.intermidiateValues.XForPricing), batch.intermidiateValues.YForPricing);
+    }
+
+    function _settleBatchStep2(poolStateStruct storage $, batchStruct storage batch) internal {
+        // calculate the output amounts
         batch.outY =
             FHE.div(FHE.mul(batch.swapX, batch.intermidiateValues.YForPricing), batch.intermidiateValues.XForPricing);
 
         // calculate the final reserves of the batch
         batch.reserveX1 = batch.reserveX0 + batch.swapX + batch.mintX - batch.outX;
+    }
+
+    function _settleBatchStep3(poolStateStruct storage $, batchStruct storage batch) internal {
+        // calculate the final reserves of the batch
         batch.reserveY1 = batch.reserveY0 + batch.swapY + batch.mintY - batch.outY;
 
         // update the pool state
         $.reserveX = batch.reserveX1;
         $.reserveY = batch.reserveY1;
-
         /*
          mint the LP token for this epoch
          this will be distributed to traders once they claim their orders
         */
-        batch.lpIncrement = FHE.min(
-            FHE.div(FHE.mul($.lpTotalSupply, batch.mintX), batch.reserveX0),
-            FHE.div(FHE.mul($.lpTotalSupply, batch.mintY), batch.reserveY0)
-        ); /*
-            Although this is underestimation, it is the best we can do currently,
-            since encrypted operation is too expensive to handle the muldiv without overflow.
-            The correct way to calculate the LP increment is:
-            t = T 
-                * (x_0 * y_mint + 2 * x_swap * y_mint + x_mint * y_0 + 2 * x_mint * y_swap + 2 * x_mint * y_mint) 
-                / (2 * x_0 * y_0 + 2 * x_0 * y_swap + 2 * x_swap * y_0 + x_0 * y_mint + x_mint * y_0)
-            See https://github.com/kosunghun317/alternative_AMMs/blob/master/notes/FMAMM_batch_math.ipynb for derivation.
-           */
+        batch.lpIncrement = FHE.div(FHE.mul($.lpTotalSupply, batch.mintX), batch.reserveX0);
+    }
+
+    function _settleBatchStep4(poolStateStruct storage $, batchStruct storage batch) internal {
+        batch.lpIncrement = FHE.min(batch.lpIncrement, FHE.div(FHE.mul($.lpTotalSupply, batch.mintY), batch.reserveY0));
+        /*
+        Although this is underestimation, it is the best we can do currently,
+        since encrypted operation is too expensive to handle the muldiv without overflow.
+        The correct way to calculate the LP increment is:
+        t = T 
+            * (x_0 * y_mint + 2 * x_swap * y_mint + x_mint * y_0 + 2 * x_mint * y_swap + 2 * x_mint * y_mint) 
+            / (2 * x_0 * y_0 + 2 * x_0 * y_swap + 2 * x_swap * y_0 + x_0 * y_mint + x_mint * y_0)
+        See https://github.com/kosunghun317/alternative_AMMs/blob/master/notes/FMAMM_batch_math.ipynb for derivation.
+        */
         $.lpTotalSupply = $.lpTotalSupply + batch.lpIncrement;
         $.lpBalanceOf[address(this)] = $.lpBalanceOf[address(this)] + batch.lpIncrement;
 
@@ -192,7 +225,11 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
         }
     }
 
-    function removeLiquidity(bytes32 poolId, inEuint32 calldata _exitAmount) external onlyValidPool(poolId) {
+    function removeLiquidity(bytes32 poolId, inEuint32 calldata _exitAmount)
+        external
+        onlyValidPool(poolId)
+        notInSettlement(poolId)
+    {
         // get the pool
         poolStateStruct storage $ = poolState[poolId];
 
