@@ -37,12 +37,16 @@ export interface DivisooorInterface extends Interface {
     nameOrSignature:
       | "add"
       | "divide"
-      | "divideFourTimes"
+      | "divideManyTimes"
       | "eip712Domain"
       | "getCounter"
       | "getCounterPermit"
       | "getCounterPermitSealed"
+      | "getValues"
+      | "mulDiv"
+      | "overrideValue"
       | "owner"
+      | "setValues"
   ): FunctionFragment;
 
   getEvent(nameOrSignatureOrTopic: "EIP712DomainChanged"): EventFragment;
@@ -56,7 +60,7 @@ export interface DivisooorInterface extends Interface {
     values: [InEuint32Struct]
   ): string;
   encodeFunctionData(
-    functionFragment: "divideFourTimes",
+    functionFragment: "divideManyTimes",
     values: [InEuint32Struct]
   ): string;
   encodeFunctionData(
@@ -75,12 +79,25 @@ export interface DivisooorInterface extends Interface {
     functionFragment: "getCounterPermitSealed",
     values: [PermissionStruct]
   ): string;
+  encodeFunctionData(functionFragment: "getValues", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "mulDiv",
+    values: [InEuint32Struct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "overrideValue",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "setValues",
+    values: [InEuint32Struct]
+  ): string;
 
   decodeFunctionResult(functionFragment: "add", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "divide", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "divideFourTimes",
+    functionFragment: "divideManyTimes",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -96,7 +113,14 @@ export interface DivisooorInterface extends Interface {
     functionFragment: "getCounterPermitSealed",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getValues", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "mulDiv", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "overrideValue",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setValues", data: BytesLike): Result;
 }
 
 export namespace EIP712DomainChangedEvent {
@@ -164,7 +188,7 @@ export interface Divisooor extends BaseContract {
     "nonpayable"
   >;
 
-  divideFourTimes: TypedContractMethod<
+  divideManyTimes: TypedContractMethod<
     [encryptedValue: InEuint32Struct],
     [void],
     "nonpayable"
@@ -200,7 +224,23 @@ export interface Divisooor extends BaseContract {
     "view"
   >;
 
+  getValues: TypedContractMethod<[], [bigint], "view">;
+
+  mulDiv: TypedContractMethod<
+    [encryptedValue: InEuint32Struct],
+    [void],
+    "nonpayable"
+  >;
+
+  overrideValue: TypedContractMethod<[], [void], "nonpayable">;
+
   owner: TypedContractMethod<[], [string], "view">;
+
+  setValues: TypedContractMethod<
+    [_values: InEuint32Struct],
+    [void],
+    "nonpayable"
+  >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
@@ -221,7 +261,7 @@ export interface Divisooor extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "divideFourTimes"
+    nameOrSignature: "divideManyTimes"
   ): TypedContractMethod<
     [encryptedValue: InEuint32Struct],
     [void],
@@ -254,8 +294,24 @@ export interface Divisooor extends BaseContract {
     nameOrSignature: "getCounterPermitSealed"
   ): TypedContractMethod<[permission: PermissionStruct], [string], "view">;
   getFunction(
+    nameOrSignature: "getValues"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "mulDiv"
+  ): TypedContractMethod<
+    [encryptedValue: InEuint32Struct],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "overrideValue"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "setValues"
+  ): TypedContractMethod<[_values: InEuint32Struct], [void], "nonpayable">;
 
   getEvent(
     key: "EIP712DomainChanged"

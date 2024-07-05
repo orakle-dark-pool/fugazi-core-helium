@@ -34,6 +34,10 @@ export interface FugaziPoolActionFacetInterface extends Interface {
       | "eip712Domain"
       | "removeLiquidity"
       | "settleBatch"
+      | "settleBatchStep1"
+      | "settleBatchStep2"
+      | "settleBatchStep3"
+      | "settleBatchStep4"
       | "submitOrder"
   ): FunctionFragment;
 
@@ -65,6 +69,22 @@ export interface FugaziPoolActionFacetInterface extends Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "settleBatchStep1",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "settleBatchStep2",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "settleBatchStep3",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "settleBatchStep4",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "submitOrder",
     values: [BytesLike, InEuint32Struct]
   ): string;
@@ -80,6 +100,22 @@ export interface FugaziPoolActionFacetInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "settleBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "settleBatchStep1",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "settleBatchStep2",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "settleBatchStep3",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "settleBatchStep4",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -254,6 +290,30 @@ export interface FugaziPoolActionFacet extends BaseContract {
 
   settleBatch: TypedContractMethod<[poolId: BytesLike], [void], "nonpayable">;
 
+  settleBatchStep1: TypedContractMethod<
+    [poolId: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+
+  settleBatchStep2: TypedContractMethod<
+    [poolId: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+
+  settleBatchStep3: TypedContractMethod<
+    [poolId: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+
+  settleBatchStep4: TypedContractMethod<
+    [poolId: BytesLike],
+    [void],
+    "nonpayable"
+  >;
+
   submitOrder: TypedContractMethod<
     [poolId: BytesLike, _packedAmounts: InEuint32Struct],
     [bigint],
@@ -297,6 +357,18 @@ export interface FugaziPoolActionFacet extends BaseContract {
   >;
   getFunction(
     nameOrSignature: "settleBatch"
+  ): TypedContractMethod<[poolId: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "settleBatchStep1"
+  ): TypedContractMethod<[poolId: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "settleBatchStep2"
+  ): TypedContractMethod<[poolId: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "settleBatchStep3"
+  ): TypedContractMethod<[poolId: BytesLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "settleBatchStep4"
   ): TypedContractMethod<[poolId: BytesLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "submitOrder"

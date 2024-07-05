@@ -8,7 +8,9 @@ Moreover, for the simplicity of overall logic, Fugazi is built in singleton stru
 
 Currently Fugazi is actively developed and prototype can be deployed and run on Fhenix Helium testnet.
 
-Try run:
+To test the contract on testnet first copy `.env.example` then replace the mnemonic and wallet with your own ones. For the testnet faucet refer the Fhenix's official documentation.
+
+Then, try run:
 
 ```shell
 ./run_tasks.sh

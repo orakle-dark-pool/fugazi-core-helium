@@ -1,4 +1,4 @@
-import { Counter } from "../types";
+import { Divisooor } from "../types";
 import { task } from "hardhat/config";
 import type { TaskArguments } from "hardhat/types";
 
@@ -8,14 +8,14 @@ task("task:getCount").setAction(async function (
 ) {
   const { fhenixjs, ethers, deployments } = hre;
   const [signer] = await ethers.getSigners();
-  const Counter = await deployments.get("Counter");
+  const Counter = await deployments.get("Divisooor");
 
   console.log(`Running getCount, targeting contract at: ${Counter.address}`);
 
   const contract = (await ethers.getContractAt(
     "Counter",
     Counter.address
-  )) as unknown as unknown as Counter;
+  )) as unknown as unknown as Divisooor;
 
   // Generate a permit
   console.log("*".repeat(50));

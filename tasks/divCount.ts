@@ -61,10 +61,10 @@ task("task:divCount")
     try {
       // divideFourTimes() gets `bytes calldata encryptedValue`
       // therefore we need to pass in the `data` property
-      const tx = await contractWithSigner.divide(encyrptedAmount);
+      const tx = await contractWithSigner.mulDiv(encyrptedAmount);
       console.log(`Transaction sent. Hash: ${tx.hash}`);
     } catch (e) {
-      console.log(`Failed to send divideFourTimes transaction: ${e}`);
+      console.log(`Failed to send divideManyTimes transaction: ${e}`);
       return;
     }
 

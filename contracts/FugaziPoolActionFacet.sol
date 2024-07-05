@@ -93,69 +93,93 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
         }
     }
 
+    /*
+    each step contains at most one division operation. This is to prevent 
+    gas consumption to reach the limit.
+    */
     function settleBatch(bytes32 poolId) external onlyValidPool(poolId) {
+        settleBatchStep1(poolId);
+        settleBatchStep2(poolId);
+        settleBatchStep3(poolId);
+        settleBatchStep4(poolId);
+    }
+
+    function settleBatchStep1(bytes32 poolId) public onlyValidPool(poolId) {
         // load the pool
         poolStateStruct storage $ = poolState[poolId];
         batchStruct storage batch = $.batch[$.epoch];
 
-        // settle the batch according to the step
-        // at most 1 division per step
-        if ($.settlementStep == 0) {
-            _settleBatchStep1($, batch);
-        } else if ($.settlementStep == 1) {
-            _settleBatchStep2($, batch);
-        } else if ($.settlementStep == 2) {
-            _settleBatchStep3($, batch);
-        } else {
-            _settleBatchStep4($, batch);
-        }
+        // check the settlement step
+        if ($.settlementStep != 0) revert NotValidSettlementStep();
 
-        // update the step
-        $.settlementStep = ($.settlementStep + 1) % 4;
-    }
-
-    function _settleBatchStep1(poolStateStruct storage $, batchStruct storage batch) internal {
         // check if enough time has passed
         if (block.timestamp < $.lastSettlement + epochTime) revert EpochNotEnded();
 
-        // read reserves and set them as initial values of the batch
-        batch.reserveX0 = $.reserveX;
-        batch.reserveY0 = $.reserveY;
+        // read reserves and set them as initial values of the batch; idk why direct update is not possible tho
+        batch.reserveX0 = $.reserveX + FHE.asEuint32(0);
+        batch.reserveY0 = $.reserveY + FHE.asEuint32(0);
 
         // calculate the intermediate values
         batch.intermidiateValues.XForPricing = batch.reserveX0 + FHE.shl(batch.swapX, FHE.asEuint32(1)) + batch.mintX; // x0 + 2 * x_swap + x_mint
         batch.intermidiateValues.YForPricing = batch.reserveY0 + FHE.shl(batch.swapY, FHE.asEuint32(1)) + batch.mintY; // y0 + 2 * y_swap + y_mint
 
         // calculate the output amounts
-        batch.outX =
-            FHE.div(FHE.mul(batch.swapY, batch.intermidiateValues.XForPricing), batch.intermidiateValues.YForPricing);
+        batch.outX = batch.swapY * batch.intermidiateValues.XForPricing / batch.intermidiateValues.YForPricing;
+
+        // update the step
+        $.settlementStep = 1;
     }
 
-    function _settleBatchStep2(poolStateStruct storage $, batchStruct storage batch) internal {
+    function settleBatchStep2(bytes32 poolId) public onlyValidPool(poolId) {
+        // load the pool
+        poolStateStruct storage $ = poolState[poolId];
+        batchStruct storage batch = $.batch[$.epoch];
+
+        // check the settlement step
+        if ($.settlementStep != 1) revert NotValidSettlementStep();
+
         // calculate the output amounts
-        batch.outY =
-            FHE.div(FHE.mul(batch.swapX, batch.intermidiateValues.YForPricing), batch.intermidiateValues.XForPricing);
+        batch.outY = batch.swapX * batch.intermidiateValues.YForPricing / batch.intermidiateValues.XForPricing;
 
         // calculate the final reserves of the batch
         batch.reserveX1 = batch.reserveX0 + batch.swapX + batch.mintX - batch.outX;
-    }
-
-    function _settleBatchStep3(poolStateStruct storage $, batchStruct storage batch) internal {
-        // calculate the final reserves of the batch
         batch.reserveY1 = batch.reserveY0 + batch.swapY + batch.mintY - batch.outY;
 
+        // update the step
+        $.settlementStep = 2;
+    }
+
+    function settleBatchStep3(bytes32 poolId) public onlyValidPool(poolId) {
+        // load the pool
+        poolStateStruct storage $ = poolState[poolId];
+        batchStruct storage batch = $.batch[$.epoch];
+
+        // check the settlement step
+        if ($.settlementStep != 2) revert NotValidSettlementStep();
+
         // update the pool state
-        $.reserveX = batch.reserveX1;
-        $.reserveY = batch.reserveY1;
+        $.reserveX = batch.reserveX1 + FHE.asEuint32(0);
+        $.reserveY = batch.reserveY1 + FHE.asEuint32(0);
         /*
          mint the LP token for this epoch
          this will be distributed to traders once they claim their orders
         */
-        batch.lpIncrement = FHE.div(FHE.mul($.lpTotalSupply, batch.mintX), batch.reserveX0);
+        batch.lpIncrement = $.lpTotalSupply * batch.mintX / batch.reserveX0;
+        // FHE.div(FHE.mul($.lpTotalSupply, batch.mintX), batch.reserveX0);
+
+        // update the step
+        $.settlementStep = 3;
     }
 
-    function _settleBatchStep4(poolStateStruct storage $, batchStruct storage batch) internal {
-        batch.lpIncrement = FHE.min(batch.lpIncrement, FHE.div(FHE.mul($.lpTotalSupply, batch.mintY), batch.reserveY0));
+    function settleBatchStep4(bytes32 poolId) public onlyValidPool(poolId) {
+        // load the pool
+        poolStateStruct storage $ = poolState[poolId];
+        batchStruct storage batch = $.batch[$.epoch];
+
+        // check the settlement step
+        if ($.settlementStep != 3) revert NotValidSettlementStep();
+
+        batch.lpIncrement = FHE.min(batch.lpIncrement, $.lpTotalSupply * batch.mintY / batch.reserveY0);
         /*
         Although this is underestimation, it is the best we can do currently,
         since encrypted operation is too expensive to handle the muldiv without overflow.
@@ -171,6 +195,9 @@ contract FugaziPoolActionFacet is FugaziStorageLayout {
         // increment the epoch
         $.epoch += 1;
         $.lastSettlement = uint32(block.timestamp);
+
+        // update the step
+        $.settlementStep = 0;
     }
 
     function claim(bytes32 poolId, uint32 epoch) external onlyValidPool(poolId) {

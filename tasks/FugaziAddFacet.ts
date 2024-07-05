@@ -50,9 +50,13 @@ task("task:addFacets").setAction(async function (
       facet: FugaziPoolActionFacet.address,
       selectors: [
         "ba198d5f", // submitOrder
-        "eeb8f2b5", // settleBatch
         "1bcc8d25", // claim
         "f5398acd", // removeLiquidity
+        "eeb8f2b5", // settleBatch
+        "aaf3b5f6", // settleBatchStep1
+        "4cf9aeaf", // settleBatchStep2
+        "d81b897a", // settleBatchStep3
+        "2d0841ab", // settleBatchStep4
       ],
     },
     {

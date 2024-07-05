@@ -1,6 +1,7 @@
 // Counter
 import "./getCount";
 import "./addCount";
+import "./overrideCount";
 
 // Divisooor
 import "./divCount";
@@ -26,7 +27,7 @@ import "./FugaziSwap";
 // import "./FugaziRemoveLiquidity";
 
 // Fugazi Viewer Facet
-// import "./FugaziGetBalance";
+import "./FugaziGetBalance";
 // import "./FugaziGetUnclaimedOrders";
 // import "./FugaziGetLPBalance";
 

@@ -127,6 +127,7 @@ contract FugaziStorageLayout is Permissioned {
     error PoolNotFound();
     error EpochNotEnded();
     error OrderAlreadyClaimed();
+    error NotValidSettlementStep();
 
     // events
     event orderSubmitted(bytes32 poolId, uint32 epoch);
@@ -191,5 +192,5 @@ contract FugaziStorageLayout is Permissioned {
     }
 
     // storage variables
-    uint32 internal epochTime = 1 minutes;
+    uint32 internal epochTime = 10 seconds;
 }
