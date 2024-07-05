@@ -8,15 +8,13 @@ Moreover, for the simplicity of overall logic, Fugazi is built in singleton stru
 
 Currently Fugazi is actively developed and prototype can be deployed and run on Fhenix Helium testnet.
 
-Try running some of the following tasks:
+Try run:
 
 ```shell
-npx hardhat compile
-npx hardhat size-contracts
-npx hardhat deploy --tags Fugazi --network testnet
-npx hardhat task:addFacets --network testnet
-npx hardhat task:deposit --name FakeUSD --amount 1000 --network testnet
+./run_tasks.sh
 ```
+
+This will compile, deploy then execute several transactions to create pool and swap tokens. You can set `USE_TESTNET` parameter to decided which network to use, localfhenix or helium testnet.
 
 For the LVR calculation and simulation:
 
