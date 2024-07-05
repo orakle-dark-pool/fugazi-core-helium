@@ -116,45 +116,54 @@ task("task:swap")
     // wait for a minute
     console.log("*".repeat(50));
     console.log("Waiting for epoch length... ");
-    await new Promise((resolve) => setTimeout(resolve, 10 * 1000));
+    await new Promise((resolve) => setTimeout(resolve, 30 * 1000));
 
     // settle batch
     console.log("*".repeat(50));
-    console.log("Settling batch... step 1"); // step 1
-    try {
-      const tx = await FugaziDiamond.settleBatchStep1(poolId);
-      console.log("Settled batch:", tx.hash);
-    } catch (e) {
-      console.log("Failed to settle batch", e);
-    }
-    await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
 
-    console.log("Settling batch... step 2"); // step 2
+    console.log("Settling batch... "); // settle batch
     try {
-      const tx = await FugaziDiamond.settleBatchStep2(poolId);
+      const tx = await FugaziDiamond.settleBatch(poolId);
       console.log("Settled batch:", tx.hash);
     } catch (e) {
       console.log("Failed to settle batch", e);
     }
-    await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
 
-    console.log("Settling batch... step 3"); // step 3
-    try {
-      const tx = await FugaziDiamond.settleBatchStep3(poolId);
-      console.log("Settled batch:", tx.hash);
-    } catch (e) {
-      console.log("Failed to settle batch", e);
-    }
-    await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
+    // console.log("Settling batch... step 1"); // step 1
+    // try {
+    //   const tx = await FugaziDiamond.settleBatchStep1(poolId);
+    //   console.log("Settled batch:", tx.hash);
+    // } catch (e) {
+    //   console.log("Failed to settle batch", e);
+    // }
+    // await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
 
-    console.log("Settling batch... step 4"); // step 4
-    try {
-      const tx = await FugaziDiamond.settleBatchStep4(poolId);
-      console.log("Settled batch:", tx.hash);
-    } catch (e) {
-      console.log("Failed to settle batch", e);
-    }
-    await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
+    // console.log("Settling batch... step 2"); // step 2
+    // try {
+    //   const tx = await FugaziDiamond.settleBatchStep2(poolId);
+    //   console.log("Settled batch:", tx.hash);
+    // } catch (e) {
+    //   console.log("Failed to settle batch", e);
+    // }
+    // await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
+
+    // console.log("Settling batch... step 3"); // step 3
+    // try {
+    //   const tx = await FugaziDiamond.settleBatchStep3(poolId);
+    //   console.log("Settled batch:", tx.hash);
+    // } catch (e) {
+    //   console.log("Failed to settle batch", e);
+    // }
+    // await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
+
+    // console.log("Settling batch... step 4"); // step 4
+    // try {
+    //   const tx = await FugaziDiamond.settleBatchStep4(poolId);
+    //   console.log("Settled batch:", tx.hash);
+    // } catch (e) {
+    //   console.log("Failed to settle batch", e);
+    // }
+    // await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
 
     // claim
     console.log("*".repeat(50));
