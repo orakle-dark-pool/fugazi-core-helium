@@ -62,8 +62,9 @@ poetry run python notebooks/LVR_comparison_with_fee.ipynb
 
 ## TODO
 
-- overhaul the contract structure to make it fully support the diamond proxy pattern's utilities
-- gas optimization
-- write docs
 - update the notebooks
+- take swap fee
+- enable noise order
 - write articles
+- overhaul the contract structure to make it fully support the diamond proxy pattern's utilities
+- write docs

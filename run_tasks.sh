@@ -12,4 +12,4 @@ rm -rf deployments/localfhenix \
 && npx hardhat task:deposit --name FakeUSD --amount 32767 $( [[ "$USE_TESTNET" == "true" ]] && echo "--network testnet" ) \
 && npx hardhat task:deposit --name FakeFGZ --amount 32767 $( [[ "$USE_TESTNET" == "true" ]] && echo "--network testnet" ) \
 && npx hardhat task:createPool $( [[ "$USE_TESTNET" == "true" ]] && echo "--network testnet" ) \
-&& npx hardhat task:swap $( [[ "$USE_TESTNET" == "true" ]] && echo "--network testnet" )
+&& npx hardhat task:swap --namein FakeFGZ --amountin 1000 --nameout FakeUSD $( [[ "$USE_TESTNET" == "true" ]] && echo "--network testnet" )

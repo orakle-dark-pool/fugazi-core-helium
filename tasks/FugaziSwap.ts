@@ -8,18 +8,18 @@ import { task } from "hardhat/config";
 import type { TaskArguments } from "hardhat/types";
 
 task("task:swap")
-  .addParam("nameIn", "Name of the token to sell", "FakeUSD")
-  .addParam("amountIn", "Amount of token to sell (plaintext number)", "256")
-  .addParam("nameOut", "Name of the token to buy", "FakeFGZ")
+  .addParam("namein", "Name of the token to sell", "FakeUSD")
+  .addParam("amountin", "Amount of token to sell (plaintext number)", "256")
+  .addParam("nameout", "Name of the token to buy", "FakeFGZ")
   .setAction(async function (taskArguments: TaskArguments, hre) {
     const { fhenixjs, ethers, deployments } = hre;
     const [signer] = await ethers.getSigners();
 
     // input arguments
-    const amountIn = Number(taskArguments.amountIn);
-    const inputTokenAddress = (await deployments.get(taskArguments.nameIn))
+    const amountin = Number(taskArguments.amountin);
+    const inputTokenAddress = (await deployments.get(taskArguments.namein))
       .address;
-    const outputTokenAddress = (await deployments.get(taskArguments.nameOut))
+    const outputTokenAddress = (await deployments.get(taskArguments.nameout))
       .address;
 
     // load FugaziDiamond contract with FugaziPoolActionFacet abi
@@ -85,15 +85,14 @@ task("task:swap")
     );
     const inputAmount =
       inputTokenAddress < outputTokenAddress // is inputToken == tokenX?
-        ? (2 << 30) * 0 + (amountIn << 15)
-        : (2 << 30) * 0 + amountIn;
+        ? (2 << 30) * 0 + (amountin << 15)
+        : (2 << 30) * 0 + amountin;
     const encryptedInput = await fhenixjs.encrypt_uint32(inputAmount);
-    let swapEpoch = 0;
 
     // call swap
     console.log("*".repeat(50));
     console.log(
-      `Swapping ${amountIn} ${taskArguments.nameIn} for ${taskArguments.nameOut}... `
+      `Swapping ${amountin} ${taskArguments.namein} for ${taskArguments.nameout}... `
     );
     try {
       const tx = await FugaziDiamond.submitOrder(poolId, encryptedInput);
@@ -120,7 +119,6 @@ task("task:swap")
 
     // settle batch
     console.log("*".repeat(50));
-
     console.log("Settling batch... "); // settle batch
     try {
       const tx = await FugaziDiamond.settleBatch(poolId);
@@ -128,6 +126,7 @@ task("task:swap")
     } catch (e) {
       console.log("Failed to settle batch", e);
     }
+    await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
 
     // console.log("Settling batch... step 1"); // step 1
     // try {
@@ -169,11 +168,15 @@ task("task:swap")
     console.log("*".repeat(50));
     console.log("Claiming... ");
     try {
-      const tx = await FugaziDiamond.claim(poolId, swapEpoch);
+      const tx = await FugaziDiamond.claim(
+        unclaimedOrder[0],
+        unclaimedOrder[1]
+      );
       console.log("Claimed:", tx.hash);
     } catch (e) {
       console.log("Failed to claim", e);
     }
+    await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
 
     // check balances after swap
     console.log("*".repeat(50));
