@@ -1,8 +1,10 @@
-# FUGAZI: The first fully on-chain dark pool on Fhenix
+# FUGAZI: The First Fully On-chain Dark Pool on Fhenix
 
-Fugazi is the first fully on-chain dark pool built on Fhenix. It leverages FHE for encryption, batches orders and add noisy order to ensure the pre and post trade privacy.
+Fugazi is the first fully on-chain dark pool built on Fhenix. To provide pre-trade and post-trade privacy, Fugazi leverages following three tools:
 
-For the underlying AMM curve we used FMAMM, since more arbitrageurs leads to the less LVR, unlike typical CPMM.
+- Reserves & Order Encryption with FHE
+- Batch Execution
+- Noise Order
 
 Moreover, for the simplicity of overall logic, Fugazi is built in singleton structure with modules for delegate calls.
 
@@ -18,21 +20,16 @@ Then, try run:
 
 This will compile, deploy then execute several transactions to create pool and swap tokens. You can set `USE_TESTNET` parameter to decided which network to use, localfhenix or helium testnet.
 
-For the LVR calculation and simulation:
-
-```shell
-poetry run python notebooks/LVR_comparison_with_fee.ipynb
-```
-
 ## References
 
-### Dark pool in general
+### Dark pool in General
 
 [SoK: Privacy-Enhancing Technologies in Finance](https://ia.cr/2023/122)\
+[MPC Joins The Dark Side](https://ia.cr/2018/1045)\
+[An Efficient Data-Independent Priority Queue and its Application to Dark Pools](https://eprint.iacr.org/2023/1014.pdf)\
 [Optimal Trade Execution in Illiquid Markets](https://doi.org/10.48550/arXiv.0902.2516)\
 [Optimal liquidation in dark pools](https://ssrn.com/abstract=2698419)\
-[Liquidation in the Face of Adversity: Stealth vs. Sunshine Trading](https://dx.doi.org/10.2139/ssrn.1007014)\
-[A two-player portfolio tracking game](https://doi.org/10.48550/arXiv.1911.05122)
+[Liquidation in the Face of Adversity: Stealth vs. Sunshine Trading](https://dx.doi.org/10.2139/ssrn.1007014)
 
 ### Privacy in AMMs
 
@@ -63,7 +60,7 @@ poetry run python notebooks/LVR_comparison_with_fee.ipynb
 ## TODO
 
 - update the notebooks
-- take swap fee
+- complete the fee charge logic
 - enable noise order
 - write articles
 - overhaul the contract structure to make it fully support the diamond proxy pattern's utilities

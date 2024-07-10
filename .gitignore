@@ -8,6 +8,7 @@
 .venv/
 __pycache__/
 poetry.lock
+notebooks/temp/*
 
 # node_modules
 node_modules
