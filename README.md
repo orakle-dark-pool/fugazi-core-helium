@@ -10,7 +10,7 @@ Moreover, for the simplicity of overall logic, Fugazi is built in singleton stru
 
 Currently Fugazi is actively developed and prototype can be deployed and run on Fhenix Helium testnet.
 
-To test the contract on testnet first copy `.env.example` then replace the mnemonic and wallet with your own ones. For the testnet faucet refer the Fhenix's official documentation.
+To test the contract on testnet first copy `.env.example` then replace the mnemonic and wallet with your own ones. For the testnet faucet refer [the Fhenix's official documentation](https://docs.fhenix.zone/docs/devdocs/Fhenix%20Testnet/Connecting-To#faucet).
 
 Then, try run:
 
@@ -26,7 +26,7 @@ This will compile, deploy then execute several transactions to create pool and s
 
 [SoK: Privacy-Enhancing Technologies in Finance](https://ia.cr/2023/122)\
 [MPC Joins The Dark Side](https://ia.cr/2018/1045)\
-[An Efficient Data-Independent Priority Queue and its Application to Dark Pools](https://eprint.iacr.org/2023/1014.pdf)\
+[An Efficient Data-Independent Priority Queue and its Application to Dark Pools](https://ia.cr/2023/1014)\
 [Optimal Trade Execution in Illiquid Markets](https://doi.org/10.48550/arXiv.0902.2516)\
 [Optimal liquidation in dark pools](https://ssrn.com/abstract=2698419)\
 [Liquidation in the Face of Adversity: Stealth vs. Sunshine Trading](https://dx.doi.org/10.2139/ssrn.1007014)
