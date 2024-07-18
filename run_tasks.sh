@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set this to true if you want to use --network testnet, otherwise leave it empty
-USE_TESTNET="true"
+USE_TESTNET="false"
 
 # Commands to execute in sequence
 rm -rf deployments/localfhenix \
