@@ -47,6 +47,8 @@ export interface FugaziViewerFacetInterface extends Interface {
     nameOrSignature:
       | "eip712Domain"
       | "getBalance"
+      | "getLPBalance"
+      | "getPrice"
       | "getUnclaimedOrder"
       | "getUnclaimedOrdersLength"
   ): FunctionFragment;
@@ -71,6 +73,14 @@ export interface FugaziViewerFacetInterface extends Interface {
     values: [AddressLike, PermissionStruct]
   ): string;
   encodeFunctionData(
+    functionFragment: "getLPBalance",
+    values: [BytesLike, PermissionStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPrice",
+    values: [BytesLike, PermissionStruct]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getUnclaimedOrder",
     values: [BigNumberish]
   ): string;
@@ -84,6 +94,11 @@ export interface FugaziViewerFacetInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getBalance", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getLPBalance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getPrice", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getUnclaimedOrder",
     data: BytesLike
@@ -252,6 +267,18 @@ export interface FugaziViewerFacet extends BaseContract {
     "view"
   >;
 
+  getLPBalance: TypedContractMethod<
+    [poolId: BytesLike, permission: PermissionStruct],
+    [string],
+    "view"
+  >;
+
+  getPrice: TypedContractMethod<
+    [poolId: BytesLike, permission: PermissionStruct],
+    [[string, string]],
+    "view"
+  >;
+
   getUnclaimedOrder: TypedContractMethod<
     [index: BigNumberish],
     [FugaziStorageLayout.UnclaimedOrderStructStructOutput],
@@ -286,6 +313,20 @@ export interface FugaziViewerFacet extends BaseContract {
   ): TypedContractMethod<
     [token: AddressLike, permission: PermissionStruct],
     [string],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getLPBalance"
+  ): TypedContractMethod<
+    [poolId: BytesLike, permission: PermissionStruct],
+    [string],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getPrice"
+  ): TypedContractMethod<
+    [poolId: BytesLike, permission: PermissionStruct],
+    [[string, string]],
     "view"
   >;
   getFunction(
