@@ -54,22 +54,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Strings__factory>;
     getContractFactory(
-      name: "Counter",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Counter__factory>;
-    getContractFactory(
-      name: "Divisooor",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Divisooor__factory>;
-    getContractFactory(
-      name: "FakeFGZ",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.FakeFGZ__factory>;
-    getContractFactory(
-      name: "FakeUSD",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.FakeUSD__factory>;
-    getContractFactory(
       name: "FugaziAccountFacet",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FugaziAccountFacet__factory>;
@@ -106,9 +90,33 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FHERC20Mintable__factory>;
     getContractFactory(
+      name: "Counter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Counter__factory>;
+    getContractFactory(
+      name: "Divisooor",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Divisooor__factory>;
+    getContractFactory(
       name: "Lock",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Lock__factory>;
+    getContractFactory(
+      name: "FakeEUR",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.FakeEUR__factory>;
+    getContractFactory(
+      name: "FakeFGZ",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.FakeFGZ__factory>;
+    getContractFactory(
+      name: "FakeUSD",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.FakeUSD__factory>;
+    getContractFactory(
+      name: "TokenDistributor",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TokenDistributor__factory>;
     getContractFactory(
       name: "ERC20",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -165,26 +173,6 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Strings>;
     getContractAt(
-      name: "Counter",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Counter>;
-    getContractAt(
-      name: "Divisooor",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Divisooor>;
-    getContractAt(
-      name: "FakeFGZ",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.FakeFGZ>;
-    getContractAt(
-      name: "FakeUSD",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.FakeUSD>;
-    getContractAt(
       name: "FugaziAccountFacet",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -230,10 +218,40 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.FHERC20Mintable>;
     getContractAt(
+      name: "Counter",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Counter>;
+    getContractAt(
+      name: "Divisooor",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Divisooor>;
+    getContractAt(
       name: "Lock",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.Lock>;
+    getContractAt(
+      name: "FakeEUR",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.FakeEUR>;
+    getContractAt(
+      name: "FakeFGZ",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.FakeFGZ>;
+    getContractAt(
+      name: "FakeUSD",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.FakeUSD>;
+    getContractAt(
+      name: "TokenDistributor",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TokenDistributor>;
     getContractAt(
       name: "ERC20",
       address: string | ethers.Addressable,
@@ -281,22 +299,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Strings>;
     deployContract(
-      name: "Counter",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Counter>;
-    deployContract(
-      name: "Divisooor",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Divisooor>;
-    deployContract(
-      name: "FakeFGZ",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.FakeFGZ>;
-    deployContract(
-      name: "FakeUSD",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.FakeUSD>;
-    deployContract(
       name: "FugaziAccountFacet",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.FugaziAccountFacet>;
@@ -333,9 +335,33 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.FHERC20Mintable>;
     deployContract(
+      name: "Counter",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Counter>;
+    deployContract(
+      name: "Divisooor",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Divisooor>;
+    deployContract(
       name: "Lock",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Lock>;
+    deployContract(
+      name: "FakeEUR",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.FakeEUR>;
+    deployContract(
+      name: "FakeFGZ",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.FakeFGZ>;
+    deployContract(
+      name: "FakeUSD",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.FakeUSD>;
+    deployContract(
+      name: "TokenDistributor",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.TokenDistributor>;
     deployContract(
       name: "ERC20",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -392,26 +418,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Strings>;
     deployContract(
-      name: "Counter",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Counter>;
-    deployContract(
-      name: "Divisooor",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Divisooor>;
-    deployContract(
-      name: "FakeFGZ",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.FakeFGZ>;
-    deployContract(
-      name: "FakeUSD",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.FakeUSD>;
-    deployContract(
       name: "FugaziAccountFacet",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -457,10 +463,40 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.FHERC20Mintable>;
     deployContract(
+      name: "Counter",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Counter>;
+    deployContract(
+      name: "Divisooor",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Divisooor>;
+    deployContract(
       name: "Lock",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Lock>;
+    deployContract(
+      name: "FakeEUR",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.FakeEUR>;
+    deployContract(
+      name: "FakeFGZ",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.FakeFGZ>;
+    deployContract(
+      name: "FakeUSD",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.FakeUSD>;
+    deployContract(
+      name: "TokenDistributor",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.TokenDistributor>;
     deployContract(
       name: "ERC20",
       args: any[],

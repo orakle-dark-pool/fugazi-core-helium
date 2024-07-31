@@ -4,9 +4,12 @@ pragma solidity ^0.8.24;
 import "./FHERC20.sol";
 
 contract FHERC20Mintable is FHERC20 {
-    constructor(string memory name_, string memory symbol_, address recipient, inEuint32 memory _encryptedAmount)
-        FHERC20(name_, symbol_)
-    {
+    constructor(
+        string memory name_,
+        string memory symbol_,
+        address recipient,
+        inEuint32 memory _encryptedAmount
+    ) FHERC20(name_, symbol_) {
         // type conversion
         euint32 encryptedAmount = FHE.asEuint32(_encryptedAmount);
 

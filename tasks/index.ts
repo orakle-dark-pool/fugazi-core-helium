@@ -1,7 +1,6 @@
 // Counter
 import "./getCount";
 import "./addCount";
-import "./overrideCount";
 
 // Divisooor
 import "./divCount";
@@ -12,7 +11,7 @@ import "./wrapFHERC20";
 import "./unwrapFHERC20";
 
 // Fugazi Diamond
-import "./FugaziAddFacet";
+import "./FugaziAddFacets";
 
 // Fugazi Account Facet
 import "./FugaziDeposit";

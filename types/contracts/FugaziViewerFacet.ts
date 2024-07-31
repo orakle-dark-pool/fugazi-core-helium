@@ -50,6 +50,7 @@ export interface FugaziViewerFacetInterface extends Interface {
       | "getLPBalance"
       | "getPrice"
       | "getUnclaimedOrder"
+      | "getUnclaimedOrders"
       | "getUnclaimedOrdersLength"
   ): FunctionFragment;
 
@@ -85,6 +86,10 @@ export interface FugaziViewerFacetInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getUnclaimedOrders",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getUnclaimedOrdersLength",
     values?: undefined
   ): string;
@@ -101,6 +106,10 @@ export interface FugaziViewerFacetInterface extends Interface {
   decodeFunctionResult(functionFragment: "getPrice", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getUnclaimedOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getUnclaimedOrders",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -275,13 +284,19 @@ export interface FugaziViewerFacet extends BaseContract {
 
   getPrice: TypedContractMethod<
     [poolId: BytesLike, permission: PermissionStruct],
-    [[string, string]],
+    [string],
     "view"
   >;
 
   getUnclaimedOrder: TypedContractMethod<
     [index: BigNumberish],
     [FugaziStorageLayout.UnclaimedOrderStructStructOutput],
+    "view"
+  >;
+
+  getUnclaimedOrders: TypedContractMethod<
+    [],
+    [FugaziStorageLayout.UnclaimedOrderStructStructOutput[]],
     "view"
   >;
 
@@ -326,7 +341,7 @@ export interface FugaziViewerFacet extends BaseContract {
     nameOrSignature: "getPrice"
   ): TypedContractMethod<
     [poolId: BytesLike, permission: PermissionStruct],
-    [[string, string]],
+    [string],
     "view"
   >;
   getFunction(
@@ -334,6 +349,13 @@ export interface FugaziViewerFacet extends BaseContract {
   ): TypedContractMethod<
     [index: BigNumberish],
     [FugaziStorageLayout.UnclaimedOrderStructStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getUnclaimedOrders"
+  ): TypedContractMethod<
+    [],
+    [FugaziStorageLayout.UnclaimedOrderStructStructOutput[]],
     "view"
   >;
   getFunction(

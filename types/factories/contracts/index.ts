@@ -3,14 +3,11 @@
 /* eslint-disable */
 export * as interfaces from "./interfaces";
 export * as libraries from "./libraries";
-export { Counter__factory } from "./Counter__factory";
-export { Divisooor__factory } from "./Divisooor__factory";
-export { FakeFGZ__factory } from "./FakeFGZ__factory";
-export { FakeUSD__factory } from "./FakeUSD__factory";
+export * as misc from "./misc";
+export * as tokens from "./tokens";
 export { FugaziAccountFacet__factory } from "./FugaziAccountFacet__factory";
 export { FugaziDiamond__factory } from "./FugaziDiamond__factory";
 export { FugaziPoolActionFacet__factory } from "./FugaziPoolActionFacet__factory";
 export { FugaziPoolRegistryFacet__factory } from "./FugaziPoolRegistryFacet__factory";
 export { FugaziStorageLayout__factory } from "./FugaziStorageLayout__factory";
 export { FugaziViewerFacet__factory } from "./FugaziViewerFacet__factory";
-export { Lock__factory } from "./Lock__factory";

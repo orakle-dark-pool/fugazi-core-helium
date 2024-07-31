@@ -46,6 +46,28 @@ const func: DeployFunction = async function () {
     console.log(`FakeUSD contract deployed at: `, FakeUSD.address);
   };
 
+  const deployFakeEUR = async () => {
+    const FakeEURInitialSupply = 32767; // maximum 2^15 - 1, adjust as needed
+
+    console.log(`Encrypting  FakeEUR initial supply: ${FakeEURInitialSupply}`);
+    const encryptedFakeEURInitialSupply = await fhenixjs.encrypt_uint32(
+      FakeEURInitialSupply
+    );
+    console.log(
+      `Encrypted FakeEUR initial supply:`,
+      encryptedFakeEURInitialSupply
+    );
+
+    const FakeEUR = await deploy("FakeEUR", {
+      from: signer.address,
+      args: [encryptedFakeEURInitialSupply],
+      log: true,
+      skipIfAlreadyDeployed: false,
+    });
+
+    console.log(`FakeEUR contract deployed at: `, FakeEUR.address);
+  }
+
   // Deploy FakeFGZ with initial supply
   const deployFakeFGZ = async () => {
     const FakeFGZInitialSupply = 32767; // maximum 2^15 - 1, adjust as needed
@@ -84,6 +106,7 @@ const func: DeployFunction = async function () {
   async function main() {
     // Deploy contracts with arguments
     await deployFakeUSD();
+    await deployFakeEUR();
     await deployFakeFGZ();
 
     // Deploy contracts without arguments
