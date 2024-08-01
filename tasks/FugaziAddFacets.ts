@@ -32,29 +32,29 @@ task("task:addFacets").setAction(async function (
   // construct the input array
   console.log("Constructing input array... ");
   const facetsAndSelectors = [
-    {
-      facet: FugaziAccountFacet.address,
-      selectors: [
-        "a6462d0a", // deposit
-        "e94af36e", // withdraw
-      ],
-    },
-    {
-      facet: FugaziPoolRegistryFacet.address,
-      selectors: [
-        "46727639", // createPool
-        "2ef61c21", // getPoolId
-      ],
-    },
-    {
-      facet: FugaziPoolActionFacet.address,
-      selectors: [
-        "ba198d5f", // submitOrder
-        "f5398acd", // removeLiquidity
-        "eeb8f2b5", // settleBatch
-        "1bcc8d25", // claim
-      ],
-    },
+    // {
+    //   facet: FugaziAccountFacet.address,
+    //   selectors: [
+    //     "a6462d0a", // deposit
+    //     "e94af36e", // withdraw
+    //   ],
+    // },
+    // {
+    //   facet: FugaziPoolRegistryFacet.address,
+    //   selectors: [
+    //     "46727639", // createPool
+    //     "2ef61c21", // getPoolId
+    //   ],
+    // },
+    // {
+    //   facet: FugaziPoolActionFacet.address,
+    //   selectors: [
+    //     "ba198d5f", // submitOrder
+    //     "f5398acd", // removeLiquidity
+    //     "eeb8f2b5", // settleBatch
+    //     "1bcc8d25", // claim
+    //   ],
+    // },
     {
       facet: FugaziViewerFacet.address,
       selectors: [
@@ -63,6 +63,8 @@ task("task:addFacets").setAction(async function (
         "11bd8581", // getLPBalance
         "c7c13129", // getUnclaimedOrdersLength
         "6697d691", // getUnclaimedOrder
+        "c0df2df2", // getUnclaimedOrders
+        "09f2c019", // getPoolInfo
       ],
     },
   ];

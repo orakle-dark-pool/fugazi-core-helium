@@ -77,4 +77,13 @@ contract FugaziViewerFacet is FugaziStorageLayout {
         // return
         return orders;
     }
+
+    function getPoolInfo(
+        bytes32 poolId
+    ) external view returns (uint32, uint32) {
+        uint32 epoch = poolState[poolId].epoch;
+        uint32 lastSettlement = poolState[poolId].lastSettlement;
+
+        return (epoch, lastSettlement);
+    }
 }

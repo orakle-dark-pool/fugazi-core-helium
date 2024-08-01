@@ -48,6 +48,7 @@ export interface FugaziViewerFacetInterface extends Interface {
       | "eip712Domain"
       | "getBalance"
       | "getLPBalance"
+      | "getPoolInfo"
       | "getPrice"
       | "getUnclaimedOrder"
       | "getUnclaimedOrders"
@@ -78,6 +79,10 @@ export interface FugaziViewerFacetInterface extends Interface {
     values: [BytesLike, PermissionStruct]
   ): string;
   encodeFunctionData(
+    functionFragment: "getPoolInfo",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getPrice",
     values: [BytesLike, PermissionStruct]
   ): string;
@@ -101,6 +106,10 @@ export interface FugaziViewerFacetInterface extends Interface {
   decodeFunctionResult(functionFragment: "getBalance", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getLPBalance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPoolInfo",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getPrice", data: BytesLike): Result;
@@ -282,6 +291,12 @@ export interface FugaziViewerFacet extends BaseContract {
     "view"
   >;
 
+  getPoolInfo: TypedContractMethod<
+    [poolId: BytesLike],
+    [[bigint, bigint]],
+    "view"
+  >;
+
   getPrice: TypedContractMethod<
     [poolId: BytesLike, permission: PermissionStruct],
     [string],
@@ -337,6 +352,9 @@ export interface FugaziViewerFacet extends BaseContract {
     [string],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "getPoolInfo"
+  ): TypedContractMethod<[poolId: BytesLike], [[bigint, bigint]], "view">;
   getFunction(
     nameOrSignature: "getPrice"
   ): TypedContractMethod<
