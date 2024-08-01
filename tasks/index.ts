@@ -19,7 +19,7 @@ import "./FugaziWithdraw";
 
 // Fugazi PoolRegistry Facet
 import "./FugaziCreatePool";
-import "./FugaziGetPoolId";
+import "./FugaziGetPoolInfo";
 
 // Fugazi PoolAction Facet
 import "./FugaziSwap";

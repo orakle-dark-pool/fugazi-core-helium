@@ -84,7 +84,7 @@ export interface FugaziViewerFacetInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getPrice",
-    values: [BytesLike, PermissionStruct]
+    values: [BytesLike, boolean, PermissionStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "getUnclaimedOrder",
@@ -298,7 +298,7 @@ export interface FugaziViewerFacet extends BaseContract {
   >;
 
   getPrice: TypedContractMethod<
-    [poolId: BytesLike, permission: PermissionStruct],
+    [poolId: BytesLike, YoverX: boolean, permission: PermissionStruct],
     [string],
     "view"
   >;
@@ -358,7 +358,7 @@ export interface FugaziViewerFacet extends BaseContract {
   getFunction(
     nameOrSignature: "getPrice"
   ): TypedContractMethod<
-    [poolId: BytesLike, permission: PermissionStruct],
+    [poolId: BytesLike, YoverX: boolean, permission: PermissionStruct],
     [string],
     "view"
   >;

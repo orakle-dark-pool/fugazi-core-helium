@@ -58,13 +58,13 @@ task("task:addFacets").setAction(async function (
     {
       facet: FugaziViewerFacet.address,
       selectors: [
-        "874b827a", // getPrice
+        "09f2c019", // getPoolInfo
+        "a8441de5", // getPrice
         "08b3f650", // getBalance
         "11bd8581", // getLPBalance
         "c7c13129", // getUnclaimedOrdersLength
         "6697d691", // getUnclaimedOrder
         "c0df2df2", // getUnclaimedOrders
-        "09f2c019", // getPoolInfo
       ],
     },
   ];

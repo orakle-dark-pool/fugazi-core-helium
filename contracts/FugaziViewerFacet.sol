@@ -6,17 +6,41 @@ import "./FugaziStorageLayout.sol";
 // This facet contains all the viewer functions
 // will be used for the easy access of the data from frontend
 contract FugaziViewerFacet is FugaziStorageLayout {
+    /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
+    /*                          Pool Info                         */
+    /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
+
+    // get pool's current epoch and the last settlement time
+    function getPoolInfo(
+        bytes32 poolId
+    ) external view returns (uint32, uint32) {
+        uint32 epoch = poolState[poolId].epoch;
+        uint32 lastSettlement = poolState[poolId].lastSettlement;
+
+        return (epoch, lastSettlement);
+    }
+
     // get price of pool
     function getPrice(
         bytes32 poolId,
+        bool YoverX,
         Permission memory permission
     ) external view returns (string memory) {
         poolStateStruct storage $ = poolState[poolId];
-        euint32 price = ($.reserveY * FHE.asEuint32(10 ** 4)) / $.reserveX; // precision will be 10**4
+        ebool eYoverX = FHE.asEbool(YoverX);
+        euint32 price = FHE.select(
+            eYoverX,
+            $.reserveY / $.reserveX,
+            $.reserveX / $.reserveY
+        );
 
         // reencrypt and return
         return FHE.sealoutput(price, permission.publicKey);
     }
+
+    /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
+    /*                        User Balance                        */
+    /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
     // get balance
     function getBalance(
@@ -43,6 +67,10 @@ contract FugaziViewerFacet is FugaziStorageLayout {
                 permission.publicKey
             );
     }
+
+    /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
+    /*                         User Orders                        */
+    /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
     // get unclaimed orders' length
     function getUnclaimedOrdersLength() external view returns (uint256) {
@@ -76,14 +104,5 @@ contract FugaziViewerFacet is FugaziStorageLayout {
 
         // return
         return orders;
-    }
-
-    function getPoolInfo(
-        bytes32 poolId
-    ) external view returns (uint32, uint32) {
-        uint32 epoch = poolState[poolId].epoch;
-        uint32 lastSettlement = poolState[poolId].lastSettlement;
-
-        return (epoch, lastSettlement);
     }
 }
