@@ -70,18 +70,9 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
         address spender,
         inEuint32 calldata value
     ) public virtual returns (bool) {
-        _approve(msg.sender, spender, FHE.asEuint32(value));
+        _encAllowance[msg.sender][spender] = FHE.asEuint32(value);
+        emit ApprovalEncrypted(msg.sender, spender);
         return true;
-    }
-
-    function _approve(address owner, address spender, euint32 value) internal {
-        if (owner == address(0)) {
-            revert ERC20InvalidApprover(address(0));
-        }
-        if (spender == address(0)) {
-            revert ERC20InvalidSpender(address(0));
-        }
-        _allowed[owner][spender] = value;
     }
 
     function transferEncrypted(
@@ -96,9 +87,17 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
         address to,
         euint32 amount
     ) public returns (euint32) {
-        euint32 spent = amount;
-        spent = _transferImpl(msg.sender, to, spent);
+        // u cannot transfer more than you have
+        euint32 spent = FHE.min(amount, _encBalanceOf[msg.sender]);
 
+        // update balances
+        _encBalanceOf[msg.sender] = _encBalanceOf[msg.sender] - spent;
+        _encBalanceOf[to] = _encBalanceOf[to] + spent;
+
+        // emit event
+        emit TransferEncrypted(msg.sender, to);
+
+        // return amount spent
         return spent;
     }
 
@@ -115,43 +114,28 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
         address to,
         euint32 value
     ) public virtual returns (euint32) {
-        euint32 val = value;
-        euint32 spent = _spendAllowance(from, msg.sender, val);
-        _transferImpl(from, to, spent);
-        return spent;
-    }
-
-    // Transfers an encrypted amount.
-    function _transferImpl(
-        address from,
-        address to,
-        euint32 amount
-    ) internal returns (euint32) {
-        // Make sure the sender has enough tokens.
-        euint32 amountToSend = FHE.select(
-            amount.lte(_encBalanceOf[from]),
-            amount,
-            FHE.asEuint32(0)
+        // u cannot transfer more than you have
+        euint32 spent = FHE.min(
+            value,
+            FHE.min(_encBalanceOf[from], _encAllowance[from][msg.sender])
         );
 
-        // Add to the balance of `to` and subract from the balance of `from`.
-        _encBalanceOf[to] = _encBalanceOf[to] + amountToSend;
-        _encBalanceOf[from] = _encBalanceOf[from] - amountToSend;
+        // update allowance
+        _encAllowance[from][msg.sender] =
+            _encAllowance[from][msg.sender] -
+            spent;
 
-        return amountToSend;
-    }
+        // update balances
+        _encBalanceOf[from] = _encBalanceOf[from] - spent;
+        _encBalanceOf[to] = _encBalanceOf[to] + spent;
 
-    function _spendAllowance(
-        address owner,
-        address spender,
-        euint32 value
-    ) internal virtual returns (euint32) {
-        euint32 currentAllowance = _allowanceEncrypted(owner, spender);
-        euint32 spent = FHE.min(currentAllowance, value);
-        _approve(owner, spender, (currentAllowance - spent));
+        // emit event
+        emit TransferEncrypted(from, to);
 
+        // return amount spent
         return spent;
     }
+
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                        wrap & unwrap                       */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
@@ -171,9 +155,11 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
     }
 
     function unwrap(uint32 amount) public {
-        // check encrypted balance
-        euint32 encAmount = FHE.asEuint32(amount);
-        euint32 amountToUnwrap = FHE.min(encAmount, _encBalanceOf[msg.sender]);
+        // u cannot unwrap more than you have
+        euint32 amountToUnwrap = FHE.min(
+            FHE.asEuint32(amount),
+            _encBalanceOf[msg.sender]
+        );
 
         // burn encrypted balance
         _encBalanceOf[msg.sender] = _encBalanceOf[msg.sender] - amountToUnwrap;
