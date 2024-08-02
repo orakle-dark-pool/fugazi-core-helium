@@ -49,21 +49,28 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
     /*                        FHERC20 LOGIC                       */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    function _allowanceEncrypted(address owner, address spender) internal view virtual returns (euint32) {
+    function _allowanceEncrypted(
+        address owner,
+        address spender
+    ) internal view virtual returns (euint32) {
         return _allowed[owner][spender];
     }
 
-    function allowanceEncrypted(address spender, Permission calldata permission)
-        public
-        view
-        virtual
-        onlySender(permission)
-        returns (string memory)
-    {
-        return FHE.sealoutput(_allowanceEncrypted(msg.sender, spender), permission.publicKey);
+    function allowanceEncrypted(
+        address spender,
+        Permission calldata permission
+    ) public view virtual onlySender(permission) returns (string memory) {
+        return
+            FHE.sealoutput(
+                _allowanceEncrypted(msg.sender, spender),
+                permission.publicKey
+            );
     }
 
-    function approveEncrypted(address spender, inEuint32 calldata value) public virtual returns (bool) {
+    function approveEncrypted(
+        address spender,
+        inEuint32 calldata value
+    ) public virtual returns (bool) {
         _approve(msg.sender, spender, FHE.asEuint32(value));
         return true;
     }
@@ -78,7 +85,11 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
         _allowed[owner][spender] = value;
     }
 
-    function _spendAllowance(address owner, address spender, euint32 value) internal virtual returns (euint32) {
+    function _spendAllowance(
+        address owner,
+        address spender,
+        euint32 value
+    ) internal virtual returns (euint32) {
         euint32 currentAllowance = _allowanceEncrypted(owner, spender);
         euint32 spent = FHE.min(currentAllowance, value);
         _approve(owner, spender, (currentAllowance - spent));
@@ -86,22 +97,24 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
         return spent;
     }
 
-    function transferFromEncrypted(address from, address to, euint32 value) public virtual returns (euint32) {
-        euint32 val = value;
-        euint32 spent = _spendAllowance(from, msg.sender, val);
-        _transferImpl(from, to, spent);
+    function transferFromEncrypted(
+        address from,
+        address to,
+        euint32 value
+    ) public virtual returns (euint32) {
+        euint32 spent = value;
+        spent = _spendAllowance(from, to, spent);
+        spent = _transferImpl(from, to, spent);
+
         return spent;
     }
 
-    function transferFromEncrypted(address from, address to, inEuint32 calldata value)
-        public
-        virtual
-        returns (euint32)
-    {
-        euint32 val = FHE.asEuint32(value);
-        euint32 spent = _spendAllowance(from, msg.sender, val);
-        _transferImpl(from, to, spent);
-        return spent;
+    function transferFromEncrypted(
+        address from,
+        address to,
+        inEuint32 calldata value
+    ) public virtual returns (euint32) {
+        return transferFromEncrypted(from, to, FHE.asEuint32(value));
     }
 
     function wrap(uint32 amount) public {
@@ -118,7 +131,11 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
     function unwrap(uint32 amount) public {
         euint32 encAmount = FHE.asEuint32(amount);
 
-        euint32 amountToUnwrap = FHE.select(_encBalances[msg.sender].gte(encAmount), encAmount, FHE.asEuint32(0));
+        euint32 amountToUnwrap = FHE.select(
+            _encBalances[msg.sender].gte(encAmount),
+            encAmount,
+            FHE.asEuint32(0)
+        );
 
         _encBalances[msg.sender] = _encBalances[msg.sender] - amountToUnwrap;
         totalEncryptedSupply = totalEncryptedSupply - amountToUnwrap;
@@ -135,19 +152,29 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
     //     totalEncryptedSupply = totalEncryptedSupply + encryptedAmount;
     // }
 
-    function transferEncrypted(address to, inEuint32 calldata encryptedAmount) public returns (euint32) {
+    function transferEncrypted(
+        address to,
+        inEuint32 calldata encryptedAmount
+    ) public returns (euint32) {
         return transferEncrypted(to, FHE.asEuint32(encryptedAmount));
     }
 
     // Transfers an amount from the message sender address to the `to` address.
-    function transferEncrypted(address to, euint32 amount) public returns (euint32) {
+    function transferEncrypted(
+        address to,
+        euint32 amount
+    ) public returns (euint32) {
         return _transferImpl(msg.sender, to, amount);
     }
 
     // Transfers an encrypted amount.
-    function _transferImpl(address from, address to, euint32 amount) internal returns (euint32) {
+    function _transferImpl(
+        address from,
+        address to,
+        euint32 amount
+    ) internal returns (euint32) {
         // Make sure the sender has enough tokens.
-        euint32 amountToSend = FHE.select(amount.lte(_encBalances[from]), amount, FHE.asEuint32(0));
+        euint32 amountToSend = FHE.min(_encBalances[from], amount);
 
         // Add to the balance of `to` and subract from the balance of `from`.
         _encBalances[to] = _encBalances[to] + amountToSend;
@@ -156,13 +183,10 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
         return amountToSend;
     }
 
-    function balanceOfEncrypted(address account, Permission memory auth)
-        public
-        view
-        virtual
-        onlyPermitted(auth, account)
-        returns (string memory)
-    {
+    function balanceOfEncrypted(
+        address account,
+        Permission memory auth
+    ) public view virtual onlyPermitted(auth, account) returns (string memory) {
         return _encBalances[account].seal(auth.publicKey);
     }
 
