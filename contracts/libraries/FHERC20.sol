@@ -62,6 +62,7 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
                 permission.publicKey
             );
     }
+
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                   FHERC20 WRITE FUNCTIONS                  */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
@@ -70,8 +71,13 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
         address spender,
         inEuint32 calldata value
     ) public virtual returns (bool) {
+        // update allowance
         _encAllowance[msg.sender][spender] = FHE.asEuint32(value);
+
+        // emit event
         emit ApprovalEncrypted(msg.sender, spender);
+
+        // return bool
         return true;
     }
 
@@ -114,7 +120,7 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
         address to,
         euint32 value
     ) public virtual returns (euint32) {
-        // u cannot transfer more than you have
+        // u cannot pull more than sender allows or has
         euint32 spent = FHE.min(
             value,
             FHE.min(_encBalanceOf[from], _encAllowance[from][msg.sender])

@@ -112,7 +112,7 @@ contract FugaziStorageLayout is Permissioned {
     // storage variables
     mapping(address => mapping(address => bytes32)) internal poolIdMapping;
     mapping(bytes32 => poolStateStruct) internal poolState;
-    uint32 internal epochTime = 30 seconds;
+    uint32 internal constant epochTime = 30 seconds;
     uint32 internal constant feeBitShifts = 7; // 1/128 ~ 0.78%
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
