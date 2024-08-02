@@ -34,10 +34,6 @@ export interface FugaziPoolActionFacetInterface extends Interface {
       | "eip712Domain"
       | "removeLiquidity"
       | "settleBatch"
-      | "settleBatchStep1"
-      | "settleBatchStep2"
-      | "settleBatchStep3"
-      | "settleBatchStep4"
       | "submitOrder"
   ): FunctionFragment;
 
@@ -47,7 +43,7 @@ export interface FugaziPoolActionFacetInterface extends Interface {
       | "EIP712DomainChanged"
       | "PoolCreated"
       | "Withdraw"
-      | "epochSettled"
+      | "batchSettled"
       | "facetAdded"
       | "orderSubmitted"
   ): EventFragment;
@@ -69,22 +65,6 @@ export interface FugaziPoolActionFacetInterface extends Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "settleBatchStep1",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "settleBatchStep2",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "settleBatchStep3",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "settleBatchStep4",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
     functionFragment: "submitOrder",
     values: [BytesLike, InEuint32Struct]
   ): string;
@@ -100,22 +80,6 @@ export interface FugaziPoolActionFacetInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "settleBatch",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "settleBatchStep1",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "settleBatchStep2",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "settleBatchStep3",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "settleBatchStep4",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -178,7 +142,7 @@ export namespace WithdrawEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace epochSettledEvent {
+export namespace batchSettledEvent {
   export type InputTuple = [poolId: BytesLike, epoch: BigNumberish];
   export type OutputTuple = [poolId: string, epoch: bigint];
   export interface OutputObject {
@@ -290,30 +254,6 @@ export interface FugaziPoolActionFacet extends BaseContract {
 
   settleBatch: TypedContractMethod<[poolId: BytesLike], [void], "nonpayable">;
 
-  settleBatchStep1: TypedContractMethod<
-    [poolId: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-
-  settleBatchStep2: TypedContractMethod<
-    [poolId: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-
-  settleBatchStep3: TypedContractMethod<
-    [poolId: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-
-  settleBatchStep4: TypedContractMethod<
-    [poolId: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-
   submitOrder: TypedContractMethod<
     [poolId: BytesLike, _packedAmounts: InEuint32Struct],
     [bigint],
@@ -359,18 +299,6 @@ export interface FugaziPoolActionFacet extends BaseContract {
     nameOrSignature: "settleBatch"
   ): TypedContractMethod<[poolId: BytesLike], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "settleBatchStep1"
-  ): TypedContractMethod<[poolId: BytesLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "settleBatchStep2"
-  ): TypedContractMethod<[poolId: BytesLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "settleBatchStep3"
-  ): TypedContractMethod<[poolId: BytesLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "settleBatchStep4"
-  ): TypedContractMethod<[poolId: BytesLike], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "submitOrder"
   ): TypedContractMethod<
     [poolId: BytesLike, _packedAmounts: InEuint32Struct],
@@ -407,11 +335,11 @@ export interface FugaziPoolActionFacet extends BaseContract {
     WithdrawEvent.OutputObject
   >;
   getEvent(
-    key: "epochSettled"
+    key: "batchSettled"
   ): TypedContractEvent<
-    epochSettledEvent.InputTuple,
-    epochSettledEvent.OutputTuple,
-    epochSettledEvent.OutputObject
+    batchSettledEvent.InputTuple,
+    batchSettledEvent.OutputTuple,
+    batchSettledEvent.OutputObject
   >;
   getEvent(
     key: "facetAdded"
@@ -473,15 +401,15 @@ export interface FugaziPoolActionFacet extends BaseContract {
       WithdrawEvent.OutputObject
     >;
 
-    "epochSettled(bytes32,uint32)": TypedContractEvent<
-      epochSettledEvent.InputTuple,
-      epochSettledEvent.OutputTuple,
-      epochSettledEvent.OutputObject
+    "batchSettled(bytes32,uint32)": TypedContractEvent<
+      batchSettledEvent.InputTuple,
+      batchSettledEvent.OutputTuple,
+      batchSettledEvent.OutputObject
     >;
-    epochSettled: TypedContractEvent<
-      epochSettledEvent.InputTuple,
-      epochSettledEvent.OutputTuple,
-      epochSettledEvent.OutputObject
+    batchSettled: TypedContractEvent<
+      batchSettledEvent.InputTuple,
+      batchSettledEvent.OutputTuple,
+      batchSettledEvent.OutputObject
     >;
 
     "facetAdded(bytes4,address)": TypedContractEvent<

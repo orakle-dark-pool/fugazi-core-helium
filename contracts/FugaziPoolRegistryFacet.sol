@@ -6,7 +6,11 @@ import "./FugaziStorageLayout.sol";
 // This facet will handle pool registry operations
 contract FugaziPoolRegistryFacet is FugaziStorageLayout {
     // create pool
-    function createPool(address tokenX, address tokenY, inEuint32 calldata _initialReserves) external {
+    function createPool(
+        address tokenX,
+        address tokenY,
+        inEuint32 calldata _initialReserves
+    ) external {
         /* transform the type:
         smallest 15 bits = initial reserve of tokenY
         next 15 bits = initial reserve of tokenX
@@ -22,33 +26,41 @@ contract FugaziPoolRegistryFacet is FugaziStorageLayout {
         // adjust the input; we cannot create a pool with reserves more than the owner has
         euint32 availabeX = FHE.min(
             account[msg.sender].balanceOf[tokenX],
-            FHE.shr(FHE.and(initialReserves, FHE.asEuint32(1073709056)), FHE.asEuint32(15)) // and(initialReserves, (2^30 - 1) - (2^15 - 1)) >> 15
+            FHE.shr(
+                FHE.and(initialReserves, FHE.asEuint32(1073709056)),
+                FHE.asEuint32(15)
+            ) // and(initialReserves, (2^30 - 1) - (2^15 - 1)) >> 15
         );
         euint32 availabeY = FHE.min(
             account[msg.sender].balanceOf[tokenY],
             FHE.and(initialReserves, FHE.asEuint32(32767)) // smallest 15 bits (32767 = 2 ** 15 - 1)
         );
 
-        // minimum reserves: at least 2048 of each token
+        // minimum reserves: at least 2**(feeBitShifts + 1) of each token
         // This is for taking strictly positive amount of fee in both reserve tokens and LP tokens
         FHE.req(
             FHE.and(
-                FHE.gt(availabeX, FHE.asEuint32(2048)), // X reserve should be at least 2048
-                FHE.gt(availabeY, FHE.asEuint32(2048)) // Y reserve should be at least 2048
+                FHE.gt(availabeX, FHE.asEuint32(2 << (feeBitShifts + 1))),
+                FHE.gt(availabeY, FHE.asEuint32(2 << (feeBitShifts + 1)))
             )
         );
 
         // deduct the token balance of msg.sender
-        account[msg.sender].balanceOf[tokenX] = account[msg.sender].balanceOf[tokenX] - availabeX;
-        account[msg.sender].balanceOf[tokenY] = account[msg.sender].balanceOf[tokenY] - availabeY;
+        account[msg.sender].balanceOf[tokenX] =
+            account[msg.sender].balanceOf[tokenX] -
+            availabeX;
+        account[msg.sender].balanceOf[tokenY] =
+            account[msg.sender].balanceOf[tokenY] -
+            availabeY;
 
         // construct input
-        poolCreationInputStruct memory poolCreationInput = poolCreationInputStruct({
-            tokenX: tokenX,
-            tokenY: tokenY,
-            initialReserveX: availabeX,
-            initialReserveY: availabeY
-        });
+        poolCreationInputStruct
+            memory poolCreationInput = poolCreationInputStruct({
+                tokenX: tokenX,
+                tokenY: tokenY,
+                initialReserveX: availabeX,
+                initialReserveY: availabeY
+            });
 
         // create pool - to avoid the stack too deep error we use a helper function
         _createPool(poolCreationInput);
@@ -65,7 +77,9 @@ contract FugaziPoolRegistryFacet is FugaziStorageLayout {
         }
 
         // update pool id mapping
-        poolIdMapping[i.tokenX][i.tokenY] = keccak256(abi.encodePacked(i.tokenX, i.tokenY));
+        poolIdMapping[i.tokenX][i.tokenY] = keccak256(
+            abi.encodePacked(i.tokenX, i.tokenY)
+        );
         poolId = getPoolId(i.tokenX, i.tokenY);
 
         // initialize pool
@@ -76,7 +90,10 @@ contract FugaziPoolRegistryFacet is FugaziStorageLayout {
         emit PoolCreated(i.tokenX, i.tokenY, poolId);
     }
 
-    function _initializePool(poolStateStruct storage $, poolCreationInputStruct memory i) internal {
+    function _initializePool(
+        poolStateStruct storage $,
+        poolCreationInputStruct memory i
+    ) internal {
         // set token addresses
         $.tokenX = i.tokenX;
         $.tokenY = i.tokenY;
@@ -87,8 +104,14 @@ contract FugaziPoolRegistryFacet is FugaziStorageLayout {
         $.settlementStep = 0;
 
         // take half of fee and set protocol account balances
-        $.protocolX = FHE.shr(i.initialReserveX, FHE.asEuint32(feeBitShifts + 1));
-        $.protocolY = FHE.shr(i.initialReserveY, FHE.asEuint32(feeBitShifts + 1));
+        $.protocolX = FHE.shr(
+            i.initialReserveX,
+            FHE.asEuint32(feeBitShifts + 1)
+        );
+        $.protocolY = FHE.shr(
+            i.initialReserveY,
+            FHE.asEuint32(feeBitShifts + 1)
+        );
 
         // set reserves
         $.reserveX = i.initialReserveX - $.protocolX;
@@ -96,12 +119,23 @@ contract FugaziPoolRegistryFacet is FugaziStorageLayout {
 
         // mint LP token and take another half of fee
         $.lpTotalSupply = FHE.max($.reserveX, $.reserveY); // should be less than 2^15 too
-        $.lpBalanceOf[address(this)] = FHE.shr($.lpTotalSupply, FHE.asEuint32(feeBitShifts + 1)); // this will be locked permanently
-        $.lpBalanceOf[msg.sender] = $.lpTotalSupply - $.lpBalanceOf[address(this)];
+        $.lpBalanceOf[address(this)] = FHE.shr(
+            $.lpTotalSupply,
+            FHE.asEuint32(feeBitShifts + 1)
+        ); // this will be locked permanently
+        $.lpBalanceOf[msg.sender] =
+            $.lpTotalSupply -
+            $.lpBalanceOf[address(this)];
     }
 
     // get pool id
-    function getPoolId(address tokenX, address tokenY) public view returns (bytes32) {
-        return tokenX < tokenY ? poolIdMapping[tokenX][tokenY] : poolIdMapping[tokenY][tokenX];
+    function getPoolId(
+        address tokenX,
+        address tokenY
+    ) public view returns (bytes32) {
+        return
+            tokenX < tokenY
+                ? poolIdMapping[tokenX][tokenY]
+                : poolIdMapping[tokenY][tokenX];
     }
 }

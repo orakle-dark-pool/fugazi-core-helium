@@ -38,7 +38,7 @@ export interface FugaziAccountFacetInterface extends Interface {
       | "EIP712DomainChanged"
       | "PoolCreated"
       | "Withdraw"
-      | "epochSettled"
+      | "batchSettled"
       | "facetAdded"
       | "orderSubmitted"
   ): EventFragment;
@@ -118,7 +118,7 @@ export namespace WithdrawEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace epochSettledEvent {
+export namespace batchSettledEvent {
   export type InputTuple = [poolId: BytesLike, epoch: BigNumberish];
   export type OutputTuple = [poolId: string, epoch: bigint];
   export interface OutputObject {
@@ -293,11 +293,11 @@ export interface FugaziAccountFacet extends BaseContract {
     WithdrawEvent.OutputObject
   >;
   getEvent(
-    key: "epochSettled"
+    key: "batchSettled"
   ): TypedContractEvent<
-    epochSettledEvent.InputTuple,
-    epochSettledEvent.OutputTuple,
-    epochSettledEvent.OutputObject
+    batchSettledEvent.InputTuple,
+    batchSettledEvent.OutputTuple,
+    batchSettledEvent.OutputObject
   >;
   getEvent(
     key: "facetAdded"
@@ -359,15 +359,15 @@ export interface FugaziAccountFacet extends BaseContract {
       WithdrawEvent.OutputObject
     >;
 
-    "epochSettled(bytes32,uint32)": TypedContractEvent<
-      epochSettledEvent.InputTuple,
-      epochSettledEvent.OutputTuple,
-      epochSettledEvent.OutputObject
+    "batchSettled(bytes32,uint32)": TypedContractEvent<
+      batchSettledEvent.InputTuple,
+      batchSettledEvent.OutputTuple,
+      batchSettledEvent.OutputObject
     >;
-    epochSettled: TypedContractEvent<
-      epochSettledEvent.InputTuple,
-      epochSettledEvent.OutputTuple,
-      epochSettledEvent.OutputObject
+    batchSettled: TypedContractEvent<
+      batchSettledEvent.InputTuple,
+      batchSettledEvent.OutputTuple,
+      batchSettledEvent.OutputObject
     >;
 
     "facetAdded(bytes4,address)": TypedContractEvent<

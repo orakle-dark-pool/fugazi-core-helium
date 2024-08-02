@@ -7,25 +7,41 @@ import {IFHERC20} from "./interfaces/IFHERC20.sol";
 // This facet contains all the account management functions
 contract FugaziAccountFacet is FugaziStorageLayout {
     // deposit
-    function deposit(address recipient, address token, inEuint32 calldata _amount) external {
+    function deposit(
+        address recipient,
+        address token,
+        inEuint32 calldata _amount
+    ) external {
         // transferFrom
-        euint32 spent = IFHERC20(token).transferFromEncrypted(msg.sender, address(this), _amount);
+        euint32 spent = IFHERC20(token).transferFromEncrypted(
+            msg.sender,
+            address(this),
+            _amount
+        );
 
         // update storage
-        account[msg.sender].balanceOf[token] = account[msg.sender].balanceOf[token] + spent;
+        account[msg.sender].balanceOf[token] =
+            account[msg.sender].balanceOf[token] +
+            spent;
 
         // emit event
         emit Deposit(recipient, token);
     }
 
     // withdraw
-    function withdraw(address recipient, address token, inEuint32 calldata _amount) external {
+    function withdraw(
+        address recipient,
+        address token,
+        inEuint32 calldata _amount
+    ) external {
         // decode and adjust amount
         euint32 amount = FHE.asEuint32(_amount);
         amount = FHE.min(amount, account[msg.sender].balanceOf[token]); // you cannot withdraw more than you have
 
         // update storage
-        account[msg.sender].balanceOf[token] = account[msg.sender].balanceOf[token] - amount;
+        account[msg.sender].balanceOf[token] =
+            account[msg.sender].balanceOf[token] -
+            amount;
 
         // transfer
         IFHERC20(token).transferEncrypted(recipient, amount);

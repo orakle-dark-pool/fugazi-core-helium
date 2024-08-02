@@ -110,9 +110,10 @@ contract FugaziStorageLayout is Permissioned {
     }
 
     // storage variables
-    uint32 internal constant feeBitShifts = 10;
     mapping(address => mapping(address => bytes32)) internal poolIdMapping;
     mapping(bytes32 => poolStateStruct) internal poolState;
+    uint32 internal epochTime = 30 seconds;
+    uint32 internal constant feeBitShifts = 7; // 1/128 ~ 0.78%
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                     Pool Action Facet                      */
@@ -127,7 +128,7 @@ contract FugaziStorageLayout is Permissioned {
 
     // events
     event orderSubmitted(bytes32 poolId, uint32 epoch);
-    event epochSettled(bytes32 poolId, uint32 epoch);
+    event batchSettled(bytes32 poolId, uint32 epoch);
 
     // modifiers
     modifier onlyValidPool(bytes32 poolId) {
@@ -193,5 +194,4 @@ contract FugaziStorageLayout is Permissioned {
     }
 
     // storage variables
-    uint32 internal epochTime = 30 seconds;
 }

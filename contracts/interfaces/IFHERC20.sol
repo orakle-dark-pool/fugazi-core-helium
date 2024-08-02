@@ -33,7 +33,10 @@ interface IFHERC20 {
     /**
      * @dev Returns the value of tokens owned by `account`, sealed and encrypted for the caller.
      */
-    function balanceOfEncrypted(address account, Permission memory auth) external view returns (string memory);
+    function balanceOfEncrypted(
+        address account,
+        Permission memory auth
+    ) external view returns (string memory);
 
     /**
      * @dev Moves a `value` amount of tokens from the caller's account to `to`.
@@ -42,8 +45,14 @@ interface IFHERC20 {
      *
      * Emits a {TransferEncrypted} event.
      */
-    function transferEncrypted(address to, inEuint32 calldata value) external returns (euint32);
-    function transferEncrypted(address to, euint32 value) external returns (euint32);
+    function transferEncrypted(
+        address to,
+        inEuint32 calldata value
+    ) external returns (euint32);
+    function transferEncrypted(
+        address to,
+        euint32 value
+    ) external returns (euint32);
 
     /**
      * @dev Returns the remaining number of tokens that `spender` will be
@@ -52,7 +61,10 @@ interface IFHERC20 {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowanceEncrypted(address spender, Permission memory permission) external view returns (string memory);
+    function allowanceEncrypted(
+        address spender,
+        Permission memory permission
+    ) external view returns (string memory);
 
     /**
      * @dev Sets a `value` amount of tokens as the allowance of `spender` over the
@@ -69,7 +81,10 @@ interface IFHERC20 {
      *
      * Emits an {ApprovalEncrypted} event.
      */
-    function approveEncrypted(address spender, inEuint32 calldata value) external returns (bool);
+    function approveEncrypted(
+        address spender,
+        inEuint32 calldata value
+    ) external returns (bool);
 
     /**
      * @dev Moves a `value` amount of tokens from `from` to `to` using the
@@ -80,6 +95,14 @@ interface IFHERC20 {
      *
      * Emits a {TransferEncrypted} event.
      */
-    function transferFromEncrypted(address from, address to, inEuint32 calldata value) external returns (euint32);
-    function transferFromEncrypted(address from, address to, euint32 value) external returns (euint32);
+    function transferFromEncrypted(
+        address from,
+        address to,
+        inEuint32 calldata value
+    ) external returns (euint32);
+    function transferFromEncrypted(
+        address from,
+        address to,
+        euint32 value
+    ) external returns (euint32);
 }

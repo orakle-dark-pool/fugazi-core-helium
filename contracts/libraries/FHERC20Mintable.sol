@@ -21,7 +21,7 @@ contract FHERC20Mintable is FHERC20 {
     }
 
     function _mintEncrypted(address to, euint32 encryptedAmount) internal {
-        _encBalances[to] = _encBalances[to] + encryptedAmount;
-        totalEncryptedSupply = totalEncryptedSupply + encryptedAmount;
+        _encBalanceOf[to] = _encBalanceOf[to] + encryptedAmount;
+        _encTotalSupply = _encTotalSupply + encryptedAmount;
     }
 }
