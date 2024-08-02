@@ -102,10 +102,9 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
         address to,
         euint32 value
     ) public virtual returns (euint32) {
-        euint32 spent = value;
-        spent = _spendAllowance(from, to, spent);
-        spent = _transferImpl(from, to, spent);
-
+        euint32 val = value;
+        euint32 spent = _spendAllowance(from, msg.sender, val);
+        _transferImpl(from, to, spent);
         return spent;
     }
 
@@ -114,7 +113,10 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
         address to,
         inEuint32 calldata value
     ) public virtual returns (euint32) {
-        return transferFromEncrypted(from, to, FHE.asEuint32(value));
+        euint32 val = FHE.asEuint32(value);
+        euint32 spent = _spendAllowance(from, msg.sender, val);
+        _transferImpl(from, to, spent);
+        return spent;
     }
 
     function wrap(uint32 amount) public {
@@ -174,7 +176,11 @@ contract FHERC20 is IFHERC20, ERC20, Permissioned {
         euint32 amount
     ) internal returns (euint32) {
         // Make sure the sender has enough tokens.
-        euint32 amountToSend = FHE.min(_encBalances[from], amount);
+        euint32 amountToSend = FHE.select(
+            amount.lte(_encBalances[from]),
+            amount,
+            FHE.asEuint32(0)
+        );
 
         // Add to the balance of `to` and subract from the balance of `from`.
         _encBalances[to] = _encBalances[to] + amountToSend;
