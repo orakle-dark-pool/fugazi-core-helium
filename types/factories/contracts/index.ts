@@ -7,6 +7,8 @@ export * as misc from "./misc";
 export * as tokens from "./tokens";
 export { FugaziAccountFacet__factory } from "./FugaziAccountFacet__factory";
 export { FugaziDiamond__factory } from "./FugaziDiamond__factory";
+export { FugaziFeeFacet__factory } from "./FugaziFeeFacet__factory";
+export { FugaziNoiseFacet__factory } from "./FugaziNoiseFacet__factory";
 export { FugaziPoolActionFacet__factory } from "./FugaziPoolActionFacet__factory";
 export { FugaziPoolRegistryFacet__factory } from "./FugaziPoolRegistryFacet__factory";
 export { FugaziStorageLayout__factory } from "./FugaziStorageLayout__factory";

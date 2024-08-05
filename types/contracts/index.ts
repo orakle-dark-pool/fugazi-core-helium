@@ -11,6 +11,8 @@ import type * as tokens from "./tokens";
 export type { tokens };
 export type { FugaziAccountFacet } from "./FugaziAccountFacet";
 export type { FugaziDiamond } from "./FugaziDiamond";
+export type { FugaziFeeFacet } from "./FugaziFeeFacet";
+export type { FugaziNoiseFacet } from "./FugaziNoiseFacet";
 export type { FugaziPoolActionFacet } from "./FugaziPoolActionFacet";
 export type { FugaziPoolRegistryFacet } from "./FugaziPoolRegistryFacet";
 export type { FugaziStorageLayout } from "./FugaziStorageLayout";

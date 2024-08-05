@@ -9,7 +9,8 @@ import "./divCount";
 import "./getFHERC20BalanceOfEncrypted";
 import "./wrapFHERC20";
 import "./unwrapFHERC20";
-// import "./depsoitFHERC20ToDistributor";
+import "./DistributorDeposit";
+import "./DistributorClaim";
 
 // Fugazi Diamond
 import "./FugaziAddFacets";

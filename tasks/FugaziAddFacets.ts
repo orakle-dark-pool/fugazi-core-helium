@@ -9,6 +9,7 @@ task("task:addFacets").setAction(async function (
   const { fhenixjs, ethers, deployments } = hre;
   const [signer] = await ethers.getSigners();
 
+  console.log("*".repeat(50));
   console.log("Running addFacets");
 
   // load the FugaziDiamond contract
@@ -75,7 +76,6 @@ task("task:addFacets").setAction(async function (
         selector: `0x${selector}`,
       }))
   );
-  console.log("Input array: ", facetAndSelectorsArray);
 
   // call the addFacet function
   console.log("Adding facets and selectors... ");

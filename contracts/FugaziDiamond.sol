@@ -10,11 +10,18 @@ contract FugaziDiamond is FugaziStorageLayout {
         owner = msg.sender;
     }
 
-    function addFacet(facetAndSelectorStruct[] memory _facetAndSelectors) external onlyOwner {
+    function addFacet(
+        facetAndSelectorStruct[] memory _facetAndSelectors
+    ) external onlyOwner {
         // set selector to facet mapping
         for (uint256 i; i < _facetAndSelectors.length; i++) {
-            selectorTofacet[_facetAndSelectors[i].selector] = _facetAndSelectors[i].facet;
-            emit facetAdded(_facetAndSelectors[i].selector, _facetAndSelectors[i].facet);
+            selectorTofacet[
+                _facetAndSelectors[i].selector
+            ] = _facetAndSelectors[i].facet;
+            emit facetAdded(
+                _facetAndSelectors[i].selector,
+                _facetAndSelectors[i].facet
+            );
         }
     }
 
@@ -35,8 +42,12 @@ contract FugaziDiamond is FugaziStorageLayout {
             returndatacopy(0, 0, returndatasize())
             // return any return value or error back to the caller
             switch result
-            case 0 { revert(0, returndatasize()) }
-            default { return(0, returndatasize()) }
+            case 0 {
+                revert(0, returndatasize())
+            }
+            default {
+                return(0, returndatasize())
+            }
         }
     }
 

@@ -1,6 +1,5 @@
 import { DeployFunction } from "hardhat-deploy/types";
 import chalk from "chalk";
-
 const hre = require("hardhat");
 
 const func: DeployFunction = async function () {
@@ -22,6 +21,22 @@ const func: DeployFunction = async function () {
     }
   }
 
+  // Deploy Token
+  const deployToken = async (name: string, initialSupply: number) => {
+    console.log(`Encrypting ${name} initial supply: ${initialSupply}`);
+    const encryptedInitialSupply = await fhenixjs.encrypt_uint32(initialSupply);
+    console.log(`Encrypted ${name} initial supply:`, encryptedInitialSupply);
+
+    const token = await deploy(name, {
+      from: signer.address,
+      args: [encryptedInitialSupply],
+      log: true,
+      skipIfAlreadyDeployed: false,
+    });
+
+    console.log(`${name} contract deployed at: `, token.address);
+  };
+
   // Deploy contracts without constructor arguments
   const deployNoArgContract = async (contractName: string) => {
     const contract = await deploy(contractName, {
@@ -35,19 +50,16 @@ const func: DeployFunction = async function () {
 
   // Main deployment function
   async function main() {
-    console.log("*".repeat(50));
-    console.log("Deploying Fugazi contracts...");
-    // Deploy contracts
-    await deployNoArgContract("FugaziDiamond");
-    await deployNoArgContract("FugaziAccountFacet");
-    await deployNoArgContract("FugaziPoolRegistryFacet");
-    await deployNoArgContract("FugaziPoolActionFacet");
-    await deployNoArgContract("FugaziViewerFacet");
+    await deployToken("FakeUSD", 2 ** 15 - 1);
+    await deployToken("FakeEUR", 2 ** 15 - 1);
+    await deployToken("FakeFGZ", 2 ** 15 - 1);
+
+    await deployNoArgContract("TokenDistributor");
   }
 
   await main();
 };
 
 export default func;
-func.id = "deploy_Fugazi";
-func.tags = ["Fugazi"];
+func.id = "deploy_Tokens";
+func.tags = ["Tokens"];
