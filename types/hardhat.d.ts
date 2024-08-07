@@ -62,14 +62,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FugaziDiamond__factory>;
     getContractFactory(
-      name: "FugaziFeeFacet",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.FugaziFeeFacet__factory>;
-    getContractFactory(
-      name: "FugaziNoiseFacet",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.FugaziNoiseFacet__factory>;
-    getContractFactory(
       name: "FugaziPoolActionFacet",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FugaziPoolActionFacet__factory>;
@@ -191,16 +183,6 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.FugaziDiamond>;
     getContractAt(
-      name: "FugaziFeeFacet",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.FugaziFeeFacet>;
-    getContractAt(
-      name: "FugaziNoiseFacet",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.FugaziNoiseFacet>;
-    getContractAt(
       name: "FugaziPoolActionFacet",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -325,14 +307,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.FugaziDiamond>;
     deployContract(
-      name: "FugaziFeeFacet",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.FugaziFeeFacet>;
-    deployContract(
-      name: "FugaziNoiseFacet",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.FugaziNoiseFacet>;
-    deployContract(
       name: "FugaziPoolActionFacet",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.FugaziPoolActionFacet>;
@@ -453,16 +427,6 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.FugaziDiamond>;
-    deployContract(
-      name: "FugaziFeeFacet",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.FugaziFeeFacet>;
-    deployContract(
-      name: "FugaziNoiseFacet",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.FugaziNoiseFacet>;
     deployContract(
       name: "FugaziPoolActionFacet",
       args: any[],

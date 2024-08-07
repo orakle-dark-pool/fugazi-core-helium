@@ -40,6 +40,25 @@ export declare namespace FugaziStorageLayout {
     poolId: string,
     epoch: bigint
   ] & { poolId: string; epoch: bigint };
+
+  export type UnclaimedOrderForViewerStructStruct = {
+    poolId: BytesLike;
+    orderEpoch: BigNumberish;
+    poolEpoch: BigNumberish;
+    lastSettlement: BigNumberish;
+  };
+
+  export type UnclaimedOrderForViewerStructStructOutput = [
+    poolId: string,
+    orderEpoch: bigint,
+    poolEpoch: bigint,
+    lastSettlement: bigint
+  ] & {
+    poolId: string;
+    orderEpoch: bigint;
+    poolEpoch: bigint;
+    lastSettlement: bigint;
+  };
 }
 
 export interface FugaziViewerFacetInterface extends Interface {
@@ -311,7 +330,7 @@ export interface FugaziViewerFacet extends BaseContract {
 
   getUnclaimedOrders: TypedContractMethod<
     [],
-    [FugaziStorageLayout.UnclaimedOrderStructStructOutput[]],
+    [FugaziStorageLayout.UnclaimedOrderForViewerStructStructOutput[]],
     "view"
   >;
 
@@ -373,7 +392,7 @@ export interface FugaziViewerFacet extends BaseContract {
     nameOrSignature: "getUnclaimedOrders"
   ): TypedContractMethod<
     [],
-    [FugaziStorageLayout.UnclaimedOrderStructStructOutput[]],
+    [FugaziStorageLayout.UnclaimedOrderForViewerStructStructOutput[]],
     "view"
   >;
   getFunction(

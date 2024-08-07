@@ -11,9 +11,7 @@ contract FugaziViewerFacet is FugaziStorageLayout {
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
     // get pool's current epoch and the last settlement time
-    function getPoolInfo(
-        bytes32 poolId
-    ) external view returns (uint32, uint32) {
+    function getPoolInfo(bytes32 poolId) public view returns (uint32, uint32) {
         uint32 epoch = poolState[poolId].epoch;
         uint32 lastSettlement = poolState[poolId].lastSettlement;
 
@@ -89,17 +87,28 @@ contract FugaziViewerFacet is FugaziStorageLayout {
     function getUnclaimedOrders()
         external
         view
-        returns (unclaimedOrderStruct[] memory)
+        returns (unclaimedOrderForViewerStruct[] memory)
     {
         // get length
         uint len = account[msg.sender].unclaimedOrders.length;
 
         // create array
-        unclaimedOrderStruct[] memory orders = new unclaimedOrderStruct[](len);
+        unclaimedOrderForViewerStruct[]
+            memory orders = new unclaimedOrderForViewerStruct[](len);
 
         // fill array
+        bytes32 poolId;
+        uint32 orderEpoch;
+        uint32 poolEpoch;
+        uint32 lastSettlement;
         for (uint i = 0; i < len; i++) {
-            orders[i] = account[msg.sender].unclaimedOrders[i];
+            poolId = account[msg.sender].unclaimedOrders[i].poolId;
+            orderEpoch = account[msg.sender].unclaimedOrders[i].epoch;
+            (poolEpoch, lastSettlement) = getPoolInfo(poolId);
+            orders[i].poolId = poolId;
+            orders[i].orderEpoch = orderEpoch;
+            orders[i].poolEpoch = poolEpoch;
+            orders[i].lastSettlement = lastSettlement;
         }
 
         // return

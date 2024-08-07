@@ -194,4 +194,15 @@ contract FugaziStorageLayout is Permissioned {
     }
 
     // storage variables
+
+    /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
+    /*                        Viewer Facet                        */
+    /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
+
+    struct unclaimedOrderForViewerStruct {
+        bytes32 poolId;
+        uint32 orderEpoch;
+        uint32 poolEpoch;
+        uint32 lastSettlement;
+    }
 }
