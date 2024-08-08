@@ -25,6 +25,7 @@ import "./FugaziGetPoolInfo";
 
 // Fugazi PoolAction Facet
 import "./FugaziSwap";
+import "./FugaziAddLiquidity";
 // import "./FugaziRemoveLiquidity";
 
 // Fugazi Viewer Facet
